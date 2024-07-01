@@ -1,0 +1,89 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "bat"
+version = "0.1.0"
+description = "Benchmark Agreement Testing"
+readme = "README.rst"
+authors = [
+  {name = "Yotam Perlitz", email = "yotam.perlitz@ibm.com"}
+]
+maintainers = [
+  {name = "Yotam Perlitz", email = "yotam.perlitz@ibm.com"}
+]
+classifiers = [
+
+]
+license = {text = "Not open source"}
+dependencies = [
+  
+]
+
+[project.optional-dependencies]
+dev = [
+    "coverage",  # testing
+    "mypy",  # linting
+    "pytest",  # testing
+    "ruff"  # linting
+]
+
+[project.urls]
+
+bugs = "https://github.com/perlitz/bat/issues"
+changelog = "https://github.com/perlitz/bat/blob/master/changelog.md"
+homepage = "https://github.com/perlitz/bat"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.package-data]
+"*" = ["*.*"]
+
+# Mypy
+# ----
+
+[tool.mypy]
+files = "."
+
+# Use strict defaults
+strict = true
+warn_unreachable = true
+warn_no_return = true
+
+# [[tool.mypy.overrides]]
+# # Don't require test functions to include types
+# module = "tests.*"
+# allow_untyped_defs = true
+# disable_error_code = "attr-defined"
+
+[tool.ruff]
+# Exclude a variety of commonly ignored directories.
+exclude = [
+    ".bzr",
+    ".direnv",
+    ".eggs",
+    ".git",
+    ".git-rewrite",
+    ".hg",
+    ".mypy_cache",
+    ".nox",
+    ".pants.d",
+    ".pytype",
+    ".ruff_cache",
+    ".svn",
+    ".tox",
+    ".venv",
+    "__pypackages__",
+    "_build",
+    "buck-out",
+    "build",
+    "dist",
+    "node_modules",
+    "venv",
+]
+
+# Same as Black.
+line-length = 88
+indent-width = 4
