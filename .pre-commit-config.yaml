@@ -33,17 +33,17 @@ repos:
         additional_dependencies:
           - tomli
 
-  - repo: local
-    hooks:
-      - id: enforce-relative-imports
-        name: Enforce Relative Imports
-        entry: python utils/enforce_relative_imports.py
-        language: system
-        # Adjust the files pattern to match your needs
-        files: ^src/.*\.py$
-        exclude: .*/(metric|dataset|hf_utils)\.py$
-        # Optional: Specify types or exclude files
-        types: [python]
+  # - repo: local
+  #   hooks:
+  #     - id: enforce-relative-imports
+  #       name: Enforce Relative Imports
+  #       entry: python utils/enforce_relative_imports.py
+  #       language: system
+  #       # Adjust the files pattern to match your needs
+  #       files: ^src/.*\.py$
+  #       exclude: .*/(metric|dataset|hf_utils)\.py$
+  #       # Optional: Specify types or exclude files
+  #       types: [python]
 
   # - repo: local
   #   hooks:

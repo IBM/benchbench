@@ -1,57 +1,20 @@
 from dataclasses import dataclass, field
 from typing import List
 
-default_scenario_blacklist = [
-    "MBPP",
-    "Length(ch, Alpaca)",
-    "WinoGrande",
-    "TruthfulQA",
-    "HellaSwag",
-    "ARC-C",
-    "GSM-8K",
-    "HELM  Lite",
-    "LLMonitor",
-    "Alpaca(v1)",
-    "OpenComp.",
-    "EQ+MAGI",
-    "GPT4ALL",
-]
-
-default_aggregate_scenarios = [
-    "AGI Eval ",
-    "Alpaca(v2)",
-    "Alpaca(v2, len adj)",
-    "Arena Elo",
-    "BBH",
-    "EQ-Bench(v2)",
-    "GPT4All",
-    "Hugging-6",
-    "HumanEval",
-    "MAGI",
-    "MMLU",
-    "MT-bench",
-]
-
 
 @dataclass
 class Config:
+    exp_to_run: str
     n_models_taken_list: List[int] = field(default_factory=lambda: [])
     model_select_strategy_list: List[str] = field(default_factory=lambda: [])
     n_exps: int = 10
     corr_types: List[str] = field(default_factory=lambda: ["kendall"])
     include_aggregate_as_scenario: bool = False
-    n_dates: int = None  # Optional, used only in some cases
-    scenario_blacklist: List[str] = field(
-        default_factory=lambda: default_scenario_blacklist
-    )
-    aggregate_scenarios: List[str] = field(
-        default_factory=lambda: default_aggregate_scenarios
-    )
-    reference_data_path: str = (
-        "data/processed/reference_240313_v1.csv"
-        # "data/processed/reference_240313_v2.csv"  # with helm lite added
-    )
+    scenario_blacklist: List[str] = field(default_factory=lambda: [])
+    aggregate_scenarios: List[str] = field(default_factory=lambda: [])
+    reference_data_path: str = "src/bat/assets/combined_holistic.csv"
     external_benchmarks_tested: List[str] = field(default_factory=lambda: [])
+    min_n_models_intersect: int = 5
 
     def __post_init__(self):
         self.validate_n_models_taken_list()
@@ -69,7 +32,6 @@ class Config:
             "top_aggregate",
             "bottom_aggregate",
             "random",
-            "date_random",
         }
         if not all(
             item in valid_strategies for item in self.model_select_strategy_list
@@ -120,11 +82,6 @@ class ConfigurationManager:
                 model_select_strategy_list=["somewhere_aggregate", "random"],
                 include_aggregate_as_scenario=False,
                 n_exps=20,
-            ),
-            "corr_vs_dates": Config(
-                n_models_taken_list=[10],
-                model_select_strategy_list=["date_random", "random"],
-                n_dates=10,
             ),
             "location_matters": Config(
                 n_models_taken_list=[4, 5, 6, 7, 8, 9, 10, 12, 14, 15, 20],
@@ -285,15 +242,8 @@ class ConfigurationManager:
                 ],
                 include_aggregate_as_scenario=False,
                 n_exps=1,
-                reference_data_path="bat/src/bat/assets/combined_holistic.csv",
+                reference_data_path="src/bat/assets/combined_holistic.csv",
                 corr_types=["pearson", "kendall"],
-            ),
-            "bluebench": Config(
-                n_models_taken_list=[4],
-                model_select_strategy_list=["random"],
-                include_aggregate_as_scenario=False,
-                n_exps=3,
-                reference_data_path="bluebench_v01.csv",
             ),
         }
 

@@ -4,8 +4,6 @@
 
 import unittest
 
-from bat import bat
-
 
 class TestBat(unittest.TestCase):
     """Tests for `bat` package."""
