@@ -145,7 +145,6 @@ class Benchmark:
         self.df = df
         self.add_tags()
         self.validate_dataframe()
-        # df = self.normalize_scores_per_scenario(df)
         self.df.dropna(inplace=True)
 
     def normalize_scores_per_scenario(self):
@@ -241,7 +240,7 @@ class Benchmark:
         ]
         if sorted(self.df.columns.tolist()) != sorted(required_columns):
             raise ValueError(
-                f"DataFrame must contain the following columns: {required_columns}\n"
+                f"DataFrame must contain the following columns: {sorted(required_columns)}\n"
                 f"Instead, it contains {sorted(self.df.columns.tolist())}"
             )
 
