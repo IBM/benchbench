@@ -30,7 +30,7 @@ def run_exp():
 
     all_bench_res = pd.read_csv(cfg.reference_data_path)
 
-    all_agreements = tester.all_vs_all_agreement_testing(all_bench_res)
+    all_agreements = tester.all_vs_all_agreement_testing(Benchmark(all_bench_res))
 
     plot_experiments_results(agreement_df=all_agreements, cfg=tester.cfg)
 
@@ -38,43 +38,23 @@ def run_exp():
 class Tester:
     def __init__(self, cfg):
         self.cfg = cfg
-        self.benchmark = Benchmark(pd.read_csv(self.cfg.reference_data_path))
 
+    @staticmethod
     def fetch_reference_models_names(
-        self, n_models, only_opensource=False, scenario_ratio_threshold=1 / 2
+        reference_benchmark,
+        n_models,
     ):
-        from benchmark_agreement.examples.utils import (
-            fetch_reference_models_names as _fetch_reference_models_names,
-        )
+        return list(reference_benchmark.get_model_appearences_count().keys())[:n_models]
 
-        return _fetch_reference_models_names(
-            cfg=self.cfg,
-            n_models=n_models,
-            only_opensource=only_opensource,
-            scenario_ratio_threshold=scenario_ratio_threshold,
-        )
-
-    def run_bench_agreement_testing(self, new_bench: Benchmark):
-        self.benchmark = self.benchmark.extend(new_bench)
-
-        assert (
-            len(new_bench.df["source"].unique()) == 1
-        ), "more than one source for new benchmark"
-        # self.benchmark.clear_repeated_scenarios(
-        #     source_to_keep=new_bench.df["source"].unique()[0]
-        # )
-
-        return self.all_vs_all_agreement_testing()
-
-    def all_vs_all_agreement_testing(self):
+    def all_vs_all_agreement_testing(self, benchmark):
         assert all(
-            self.benchmark.df.drop_duplicates(subset=["scenario", "source"])
+            benchmark.df.drop_duplicates(subset=["scenario", "source"])
             .groupby("scenario")["source"]
             .count()
             == 1
-        ), "duplicated scenarios exist, consider running benchmark.clear_repeated_scenarios"
+        ), "duplicated scenarios exist, consider running benchmark.clear_repeated_scenarios()"
 
-        all_bench_res = self.benchmark.df
+        all_bench_res = benchmark.df
 
         # List of all scenarios
         pair_agreements = []
@@ -100,11 +80,16 @@ class Tester:
                             # for date_threshold in date_thresholds:
                             pair_agreements_cfg = {
                                 "scenario": scenario1,
+                                "source": cur_scen_res.query(
+                                    "scenario==@scenario1"
+                                ).iloc[0]["source"],
                                 "ref_scenario": scenario2,
+                                "ref_source": cur_scen_res.query(
+                                    "scenario==@scenario2"
+                                ).iloc[0]["source"],
                                 "corr_type": corr_type,
                                 "model_select_strategy": model_select_strategy,
                                 "model_subset_size_requested": model_subset_size_requested,
-                                # "date_threshold": date_threshold,
                                 "exp_n": exp_n,
                             }
 

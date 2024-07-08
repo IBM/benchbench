@@ -66,24 +66,28 @@ class ConfigurationManager:
     def __init__(self):
         self.configs = {
             "recommended": Config(
+                exp_to_run="recommended",
                 n_models_taken_list=[5, 7, 10, 15, 20],
                 model_select_strategy_list=["somewhere_aggregate"],
                 include_aggregate_as_scenario=True,
                 n_exps=10,
             ),
             "test": Config(
+                exp_to_run="test",
                 n_models_taken_list=[20, 4],
                 model_select_strategy_list=["random"],
                 include_aggregate_as_scenario=True,
                 n_exps=3,
             ),
             "resolution_matters": Config(
+                exp_to_run="resolution_matters",
                 n_models_taken_list=[5, 6, 7, 8, 9, 10, 12, 15, 20],
                 model_select_strategy_list=["somewhere_aggregate", "random"],
                 include_aggregate_as_scenario=False,
                 n_exps=20,
             ),
             "location_matters": Config(
+                exp_to_run="location_matters",
                 n_models_taken_list=[4, 5, 6, 7, 8, 9, 10, 12, 14, 15, 20],
                 model_select_strategy_list=[
                     "somewhere_aggregate",
@@ -96,6 +100,7 @@ class ConfigurationManager:
                 include_aggregate_as_scenario=True,
             ),
             "figure_1": Config(
+                exp_to_run="figure_1",
                 n_models_taken_list=[5, 10, 15, 20, 40],
                 model_select_strategy_list=[
                     "top_aggregate",
@@ -103,6 +108,7 @@ class ConfigurationManager:
                 include_aggregate_as_scenario=True,
             ),
             "corr_metric_matters": Config(
+                exp_to_run="corr_metric_matters",
                 n_models_taken_list=[5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
                 model_select_strategy_list=["random"],
                 corr_types=["kendall", "pearson"],
@@ -124,6 +130,7 @@ class ConfigurationManager:
                 ],
             ),
             "reference_benchmark_matters": Config(
+                exp_to_run="reference_benchmark_matters",
                 n_models_taken_list=[10],
                 model_select_strategy_list=["random"],
                 include_aggregate_as_scenario=True,
@@ -150,6 +157,7 @@ class ConfigurationManager:
                 n_exps=20,
             ),
             "bench_bench": Config(
+                exp_to_run="bench_bench",
                 n_models_taken_list=[5, 10, 20],
                 model_select_strategy_list=[
                     "somewhere_aggregate",
@@ -182,6 +190,7 @@ class ConfigurationManager:
                 # , "oc"],
             ),
             "n_models_matters": Config(
+                exp_to_run="n_models_matters",
                 n_models_taken_list=[
                     5,
                     6,
@@ -205,21 +214,8 @@ class ConfigurationManager:
                 scenario_blacklist=["MBPP", "Length(ch, Alpaca)", "OpenComp."],
                 n_exps=20,
             ),
-            "external": Config(
-                n_models_taken_list=[5],
-                model_select_strategy_list=["random", "somewhere_aggregate"],
-                include_aggregate_as_scenario=True,
-                n_exps=5,
-                external_benchmarks_tested=["arena_hard", "oc"],
-            ),
-            # "ref_bench_quantitative": Config(
-            #     n_models_taken_list=[10],
-            #     model_select_strategy_list=["random"],
-            #     include_aggregate_as_scenario=False,
-            #     n_exps=50,
-            #     reference_data_path="combined_holistic.csv",
-            # ),
             "ablation": Config(
+                exp_to_run="ablation",
                 n_models_taken_list=[
                     5,
                     6,

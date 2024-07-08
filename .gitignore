@@ -107,4 +107,5 @@ ENV/
 # IDE settings
 .vscode/
 .idea/
+figures/
 

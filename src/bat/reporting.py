@@ -1,5 +1,6 @@
 import seaborn as sns
 import matplotlib.pyplot as plt
+import os
 
 
 def plot_experiments_results(agreement_df, cfg):
@@ -62,3 +63,29 @@ def plot_experiments_results(agreement_df, cfg):
         # sns.move_legend(ax, "upper left", bbox_to_anchor=(1, 1))
         plt.tight_layout()
         plt.savefig("figures/final_for_paper/pointplot_granularity_matters.pdf")
+
+
+class Reporter:
+    os.makedirs("figures", exist_ok=True)
+
+    @staticmethod
+    def draw_agreements(agreements, sources=[]):
+        if len(sources) > 0:
+            agreements = agreements.query(
+                "scenario_source in @sources and ref_scenario_source in @sources"
+            )
+        plt.figure(figsize=(14, 10))
+        sns.heatmap(
+            agreements.groupby(["scenario", "ref_scenario"])["correlation"]
+            .mean()
+            .reset_index()
+            .pivot(index="scenario", columns="ref_scenario")["correlation"]
+            .round(1),
+            annot=True,
+            xticklabels=True,
+            yticklabels=True,
+        )
+        plt.tight_layout()
+        plt.savefig("figures/newbench_cluster_within.png")
+        print("figure saved to figures/newbench_heatmap_within.png")
+        plt.clf()

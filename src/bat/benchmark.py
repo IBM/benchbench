@@ -136,16 +136,23 @@ benchmark2tag = {
 
 
 class Benchmark:
-    def __init__(self, df, data_source=None):
+    def __init__(self, df=pd.DataFrame(), data_source=None):
+        if len(df) == 0:
+            self.is_empty = True
+        else:
+            self.assign_df(df, data_source)
+
+    def assign_df(self, df, data_source):
         df["model"] = df["model"].apply(self.standardize_model_name)
         df["scenario"] = df["scenario"].apply(self.standardize_scenario_name)
         df["aggragated_from"] = [[] for _ in range(len(df))]
         if data_source:
             df["source"] = data_source
         self.df = df
-        self.add_tags()
+        # self.add_tags()
         self.validate_dataframe()
         self.df.dropna(inplace=True)
+        self.is_empty = False
 
     def normalize_scores_per_scenario(self):
         """
@@ -236,7 +243,7 @@ class Benchmark:
             "score",
             "source",
             "aggragated_from",
-            "tag",
+            # "tag",
         ]
         if sorted(self.df.columns.tolist()) != sorted(required_columns):
             raise ValueError(
