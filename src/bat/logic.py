@@ -1,5 +1,7 @@
 import random
 import pandas as pd
+from scipy.stats import pearsonr, kendalltau
+import numpy as np
 
 
 def get_pair_agreement(pair_scen_res, res_to_sort_by, cfg, models_intersect):
@@ -37,14 +39,14 @@ def get_pair_agreement(pair_scen_res, res_to_sort_by, cfg, models_intersect):
     else:
         raise NotImplementedError
 
-    agreement = get_agreement(
+    agreement, p_value = get_agreement(
         pair_scen_res[pair_scen_res["model"].isin(models_taken)][
             ["model", "scenario", "score"]
         ],
         cfg["corr_type"],
     )
 
-    return agreement, models_taken
+    return agreement, p_value
 
 
 def get_df_of_scenario_to_order_by(df, model_select_strategy):
@@ -167,12 +169,23 @@ def add_aggragete_with_mwr(df, scenarios_for_aggragate):
 
 
 def get_agreement(df, corr_type):
-    corr_matrix = df.pivot_table(
+    if corr_type == "pearson":
+        corr_func = pearsonr
+    elif corr_type == "kendall":
+        corr_func = kendalltau
+    else:
+        raise IOError(f"corr_type {corr_type} is not supported")
+
+    pivot_df = df.pivot(
         index="model",
         columns="scenario",
         values="score",
-    ).corr(corr_type)
+    )
 
-    similarity = corr_matrix.iloc[0, 1]
+    similarity = pivot_df.corr(method=lambda x, y: corr_func(x, y)[0]).iloc[0, 1]
+    p_value = (
+        pivot_df.corr(method=lambda x, y: corr_func(x, y)[1])
+        - np.eye(len(pivot_df.columns))
+    ).iloc[0, 1]
 
-    return similarity
+    return similarity, p_value

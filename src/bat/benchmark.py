@@ -1,5 +1,6 @@
 from fuzzywuzzy import process, fuzz
 import pandas as pd
+
 import seaborn as sns
 import matplotlib.pyplot as plt
 
@@ -189,7 +190,8 @@ class Benchmark:
         new_col_name,
         scenario_blacklist=[],
         mean_or_mwr="mwr",
-        specified_source="",
+        agg_source_name=None,
+        min_scenario_for_models_to_appear_in_agg=0,
     ):
         def calculate_win_rate(series):
             assert (
@@ -202,13 +204,30 @@ class Benchmark:
 
             return series.transform(win_rate)
 
-        self.df["wr"] = self.df.groupby(["scenario"])["score"].transform(
+        df_for_agg = self.df.query("scenario not in @scenario_blacklist")
+
+        n_scenario_for_aggregate = len(df_for_agg["scenario"].unique())
+        min_scenario_for_models_to_appear_in_agg = min(
+            min_scenario_for_models_to_appear_in_agg, n_scenario_for_aggregate
+        )
+
+        # remove models that appears in less then
+        models_to_consider = (  # noqa: F841
+            df_for_agg.groupby(["model"])["scenario"]
+            .count()
+            .to_frame()
+            .query("scenario>=@min_scenario_for_models_to_appear_in_agg")
+            .index.to_list()
+        )
+
+        df_for_agg = df_for_agg.query("model in @models_to_consider")
+
+        df_for_agg["wr"] = df_for_agg.groupby(["scenario"])["score"].transform(
             calculate_win_rate
         )
 
         mean_df = (
-            self.df.query("scenario not in @scenario_blacklist")
-            .groupby(["model"])
+            df_for_agg.groupby(["model"])
             .agg({"score": "mean", "wr": "mean"})
             .reset_index()
         )
@@ -222,16 +241,16 @@ class Benchmark:
             ]
         )
 
-        if specified_source:
-            mean_df["source"] = specified_source
+        if agg_source_name:
+            mean_df["source"] = agg_source_name
         elif len(self.df["source"].unique()) == 1:
             mean_df["source"] = self.df["source"].unique()[0]
         else:
             raise IOError(
-                "more that one source for aggrageted column, in this case, you must specify a source"
+                "more that one source for aggrageted column, in this case, you must specify a agg_source_name"
             )
 
-        self.df = pd.concat([self.df, mean_df]).drop(columns=["wr"])
+        self.df = pd.concat([self.df, mean_df.drop(columns=["wr"])])
 
     def validate_dataframe(self):
         if "Unnamed: 0" in self.df.columns:
@@ -243,12 +262,15 @@ class Benchmark:
             "score",
             "source",
             "aggragated_from",
-            # "tag",
         ]
-        if sorted(self.df.columns.tolist()) != sorted(required_columns):
+
+        relevant_columns = [
+            col_name for col_name in self.df.columns.tolist() if col_name != "tag"
+        ]
+        if sorted(relevant_columns) != sorted(required_columns):
             raise ValueError(
                 f"DataFrame must contain the following columns: {sorted(required_columns)}\n"
-                f"Instead, it contains {sorted(self.df.columns.tolist())}"
+                f"Instead, it contains {sorted(relevant_columns)}"
             )
 
         if (
@@ -316,6 +338,11 @@ class Benchmark:
         # Fuzzy match and replace model names from other to fit self
         model_map = {}
         n_matches = 0
+
+        assert (
+            len(other.df["model"].unique()) > 0 and len(self.get_models()) > 0
+        ), "there most be models in both dfs"
+
         for model_name_in_other in other.df["model"].unique():
             best_match, score = process.extractOne(
                 model_name_in_other, self.get_models(), scorer=fuzz.token_sort_ratio
@@ -408,10 +435,13 @@ class Benchmark:
         )
 
         # scenario_counts = self.df.drop_duplicates(['scenario','source']).groupby(['scenario'])['source'].count()
+        scenarios_already_delt_with = []
         scenarios_source_to_drop = []
         for scenario, scenario_df in self.df.drop_duplicates(
             ["scenario", "source"]
         ).groupby("scenario"):
+            if scenario in scenarios_already_delt_with:
+                continue
             # scenario = scenario[0]
 
             if len(scenario_df) > 1:
@@ -433,6 +463,7 @@ class Benchmark:
                 print(
                     f"kept: {scenario_source_to_keep}, dropped: {cur_scenarios_source_to_drop}"
                 )
+                scenarios_already_delt_with.append(scenario)
 
         self.df = self.df.query("scenario__source not in @scenarios_source_to_drop")
         self.df.drop(

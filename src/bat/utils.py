@@ -1,10 +1,12 @@
-from bat.benchmark import Benchmark
 import pandas as pd
 import os
+from bat.benchmark import Benchmark
 
 
-def get_holistic_benchmark():
-    if os.path.exists("assets/combined_holistic.csv"):
-        return Benchmark(pd.read_csv())
+def get_holistic_benchmark(file_name="assets/combined_holistic_20240708.csv"):
+    if os.path.exists(file_name):
+        df = pd.read_csv(file_name)
     else:
-        return Benchmark(pd.read_csv("src/bat/assets/combined_holistic.csv"))
+        df = pd.read_csv(f"src/bat/{file_name}")
+
+    return Benchmark(df)
