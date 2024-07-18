@@ -8,10 +8,10 @@ version = "0.1.0"
 description = "Benchmark Agreement Testing"
 readme = "README.rst"
 authors = [
-  {name = "Yotam Perlitz", email = "yotam.perlitz@ibm.com"}
+  {name = "Yotam Perlitz", email = "perlitz@gmail.com"}
 ]
 maintainers = [
-  {name = "Yotam Perlitz", email = "yotam.perlitz@ibm.com"}
+  {name = "Yotam Perlitz", email = "perlitz@gmail.com"}
 ]
 classifiers = []
 license = {text = "Not open source"}
