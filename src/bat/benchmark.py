@@ -1,8 +1,10 @@
-from fuzzywuzzy import process, fuzz
-import pandas as pd
+import os
+from pathlib import Path
 
-import seaborn as sns
 import matplotlib.pyplot as plt
+import pandas as pd
+import seaborn as sns
+from fuzzywuzzy import fuzz, process
 
 benchmark2tag = {
     "arena_hard": "holistic",
@@ -140,8 +142,15 @@ class Benchmark:
     def __init__(self, df=pd.DataFrame(), data_source=None):
         if len(df) == 0:
             self.is_empty = True
+            self.df = None
         else:
             self.assign_df(df, data_source)
+
+    def load_local_catalog(self, catalog_rel_path="assets/benchmarks"):
+        catalog_path = os.path.join(Path(__file__).parent, catalog_rel_path)
+
+        for file_path in os.listdir(catalog_path):
+            self.extend(Benchmark(pd.read_csv(os.path.join(catalog_path, file_path))))
 
     def assign_df(self, df, data_source):
         df["model"] = df["model"].apply(self.standardize_model_name)
@@ -174,9 +183,9 @@ class Benchmark:
             max_score = group["score"].max()
             # Avoid division by zero in case all scores in a group are the same
             if max_score == min_score:
-                group[
-                    "score"
-                ] = 1  # or 0, depending on how you want to handle this case
+                group["score"] = (
+                    1  # or 0, depending on how you want to handle this case
+                )
             else:
                 group["score"] = (group["score"] - min_score) / (max_score - min_score)
             return group
@@ -331,37 +340,14 @@ class Benchmark:
         )
         return name
 
-    def extend(self, other, model_match_thresh=1.0):
+    def extend(self, other):
         if not isinstance(other, Benchmark):
             raise TypeError("The added object must be an instance of Benchmark")
 
-        # Fuzzy match and replace model names from other to fit self
-        model_map = {}
-        n_matches = 0
-
-        assert (
-            len(other.df["model"].unique()) > 0 and len(self.get_models()) > 0
-        ), "there most be models in both dfs"
-
-        for model_name_in_other in other.df["model"].unique():
-            best_match, score = process.extractOne(
-                model_name_in_other, self.get_models(), scorer=fuzz.token_sort_ratio
-            )
-            if (
-                score / 100 >= model_match_thresh
-            ):  # Adjust the threshold based on your matching criteria
-                model_map[model_name_in_other] = best_match
-                n_matches += 1
-                # print(f"{score} - {model_name_in_other}:{best_match}")
-            else:
-                model_map[
-                    model_name_in_other
-                ] = model_name_in_other  # Use the new model name as
-
-        # print(f"matched {n_matches}/{len(other.df["model"].unique())}")
-        other.df["model"] = other.df["model"].replace(model_map)
-
-        self.df = pd.concat([self.df, other.df])
+        if self.df is not None:
+            self.df = pd.concat([self.df, other.df])
+        else:
+            self.df = other.df
 
         return self
 
@@ -472,3 +458,8 @@ class Benchmark:
 
     def add_tags(self):
         self.df["tag"] = self.df["scenario"].apply(lambda x: benchmark2tag[x])
+
+
+if __name__ == "__main__":
+    b = Benchmark()
+    b.load_local_catalog()
