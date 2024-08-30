@@ -479,6 +479,7 @@ class Benchmark:
             .replace("llama_3", "llama3")
             .replace("ul2", "flan-ul2")
             .split("/")[-1]
+            .replace("meta_", "")
         )
         return name
 
