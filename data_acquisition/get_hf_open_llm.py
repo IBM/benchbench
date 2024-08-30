@@ -56,6 +56,7 @@ if __name__ == "__main__":
     )
     finished_models = get_datas(data)
     df = pd.DataFrame(finished_models)
+    df = df.query("T=='🟢' or T=='💬'")
     cols_to_use = [
         "Model",
         "Average ⬆️",
@@ -77,7 +78,7 @@ if __name__ == "__main__":
         inplace=True,
     )
 
-    df.to_csv("src/bat/assets/benchmarks_to_add/hf_open_llm_v2.csv", index=False)
+    df.to_csv("src/bat/assets/benchmarks/hf_open_llm_v2_240829.csv", index=False)
 
     # for V1
 
@@ -86,6 +87,8 @@ if __name__ == "__main__":
     )
     finished_models = get_datas(data)
     df = pd.DataFrame(finished_models)
+    df = df.query("T=='🟢' or T=='💬'")
+
     cols_to_use = [
         "Model",
         "Average ⬆️",
@@ -106,4 +109,4 @@ if __name__ == "__main__":
         inplace=True,
     )
 
-    df.to_csv("src/bat/assets/benchmarks_to_add/hf_open_llm_v1.csv", index=False)
+    df.to_csv("src/bat/assets/benchmarks/hf_open_llm_v1_240829_frozen.csv", index=False)
