@@ -1,7 +1,4 @@
-Here is the CSV content with the columns prefixed by `LB_` and spaces replaced with underscores:
-
-```csv
-Model,LB_Global_Average,LB_Reasoning_Average,LB_Coding_Average,LB_Mathematics_Average,LB_Data_Analysis_Average,LB_Language_Average,LB_IF_Average
+model,LB_Global_Average,LB_Reasoning_Average,LB_Coding_Average,LB_Mathematics_Average,LB_Data_Analysis_Average,LB_Language_Average,LB_IF_Average
 zephyr-7b-beta,17.32,16.00,8.32,11.23,15.75,4.28,48.32
 zephyr-7b-alpha,19.28,17.00,11.32,9.96,17.40,7.20,52.79
 yi-6b-chat,9.02,8.00,1.32,8.53,4.38,4.69,27.22
