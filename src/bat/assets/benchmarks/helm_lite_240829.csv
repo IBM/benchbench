@@ -1,4 +1,4 @@
-model,helm_lite,NarrativeQA,NaturalQuestions(open),NaturalQuestions(closed),OpenbookQA,MMLU,MATH-Equivalent(CoT),GSM8K,LegalBench,MedQA,WMT2014
+model,helm_lite,HELM_Lite_NarrativeQA,HELM_Lite_NaturalQuestions(open),HELM_Lite_NaturalQuestions(closed),HELM_Lite_OpenbookQA,HELM_Lite_MMLU,HELM_Lite_MATH-Equivalent(CoT),HELM_Lite_GSM8K,HELM_Lite_LegalBench,HELM_Lite_MedQA,HELM_Lite_WMT2014
 GPT-4o (2024-05-13),0.963,0.804,0.803,0.501,0.966,0.748,0.829,0.905,0.733,0.857,0.231
 Claude 3.5 Sonnet (20240620),0.915,0.746,0.749,0.502,0.972,0.799,0.813,0.949,0.707,0.825,0.229
 GPT-4 (0613),0.915,0.768,0.79,0.457,0.96,0.735,0.802,0.932,0.713,0.815,0.211

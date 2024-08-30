@@ -1,4 +1,4 @@
-model,hf_open_llm_v1,ARC,HellaSwag,MMLU,TruthfulQA,Winogrande,GSM8K
+model,hf_open_llm_v1,HFV1_ARC,HFV1_HellaSwag,HFV1_MMLU,HFV1_TruthfulQA,HFV1_Winogrande,HFV1_GSM8K
 Contamination/contaminated_proof_7b_v1.0,81.14,78.07,90.22,78.92,82.29,88.16,69.14
 Contamination/contaminated_proof_7b_v1.0_safetensor,81.14,78.07,90.22,78.92,82.29,88.16,69.14
 MTSAIR/MultiVerse_70B,81.0,78.67,89.77,78.22,75.18,87.53,76.65

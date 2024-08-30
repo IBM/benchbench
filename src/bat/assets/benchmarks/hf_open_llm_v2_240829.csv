@@ -1,4 +1,4 @@
-model,hf_open_llm_v2,IFEval,BBH,BBH Raw,MATH_Lvl_5,GPQA,MUSR,MMLU-PRO
+model,hf_open_llm_v2,HFV2_IFEval,HFV2_BBH,HFV2_BBH Raw,HFV2_MATH_Lvl_5,HFV2_GPQA,HFV2_MUSR,HFV2_MMLU-PRO
 MaziyarPanahi/calme-2.1-qwen2-72b,43.61,81.63,57.33,0.7,36.03,17.45,20.15,49.05
 MaziyarPanahi/calme-2.2-qwen2-72b,43.4,80.08,56.8,0.69,41.16,16.55,16.52,49.27
 Qwen/Qwen2-72B-Instruct,42.49,79.89,57.48,0.7,35.12,16.33,17.17,48.92

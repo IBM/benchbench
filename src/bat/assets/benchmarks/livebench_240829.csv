@@ -1,4 +1,4 @@
-model,livebench,LB_Reasoning,LB_Coding,LB_Mathematics,LB_Data_Analysis,LB_Language,LB_IF
+model,livebench_240725,LB_Reasoning,LB_Coding,LB_Mathematics,LB_Data_Analysis,LB_Language,LB_IF
 claude-3-5-sonnet-20240620,59.87,58.67,60.85,53.75,56.74,56.94,72.30
 gpt-4o-2024-08-06,56.71,54.67,51.44,52.29,52.89,54.37,74.58
 chatgpt-4o-latest,54.71,52.00,47.15,52.19,54.43,49.95,72.52
