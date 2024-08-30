@@ -1,8 +1,6 @@
 import unittest
 import pandas as pd
-from bat.benchmark import (
-    Benchmark,
-)  # assuming the class is in a file named benchmark.py
+from bat.benchmark import Benchmark  # Assuming the class is in benchmark.py
 
 
 class TestBenchmark(unittest.TestCase):
@@ -27,27 +25,32 @@ class TestBenchmark(unittest.TestCase):
                     "source2",
                     "source2",
                 ],
+                "aggragated_from": [[] for _ in range(6)],  # Added missing column
             }
         )
 
     def test_initialization(self):
-        benchmark = Benchmark(self.sample_data)
+        benchmark = Benchmark(
+            self.sample_data, data_source="test_source"
+        )  # Added data_source
         self.assertIn("model", benchmark.df.columns)
         self.assertIn("scenario", benchmark.df.columns)
         self.assertIn("score", benchmark.df.columns)
         self.assertIn("aggragated_from", benchmark.df.columns)
-        self.assertIn("tag", benchmark.df.columns)
+        self.assertIn("source", benchmark.df.columns)  # Added missing assertion
 
     def test_normalize_scores_per_scenario(self):
-        benchmark = Benchmark(self.sample_data)
+        benchmark = Benchmark(self.sample_data, data_source="test_source")
         normalized_df = benchmark.normalize_scores_per_scenario()
         self.assertTrue((normalized_df.groupby("scenario")["score"].max() == 1).all())
         self.assertTrue((normalized_df.groupby("scenario")["score"].min() == 0).all())
 
     def test_add_aggragete(self):
-        benchmark = Benchmark(self.sample_data, "source")
-        benchmark.add_aggragete("new_scenario", [], "mwr")
-        self.assertIn("aggragated_scenario", benchmark.df["scenario"].values)
+        benchmark = Benchmark(self.sample_data, data_source="test_source")
+        benchmark.add_aggragete(
+            "aggregated_scenario", [], "mwr", agg_source_name="test_source"
+        )
+        self.assertIn("aggregated_scenario", benchmark.df["scenario"].values)
 
     def test_standardize_scenario_name(self):
         name = "GSM 8k (Open-Book)"
@@ -60,18 +63,18 @@ class TestBenchmark(unittest.TestCase):
         self.assertEqual(standardized_name, "command_r_plus")
 
     def test_extend(self):
-        benchmark1 = Benchmark(self.sample_data, "source_1")
-        benchmark2 = Benchmark(self.sample_data, "source_2")
+        benchmark1 = Benchmark(self.sample_data, data_source="source_1")
+        benchmark2 = Benchmark(self.sample_data, data_source="source_2")
         benchmark1.extend(benchmark2)
         self.assertEqual(len(benchmark1.df), 12)
 
     def test_get_models(self):
-        benchmark = Benchmark(self.sample_data, "source_1")
+        benchmark = Benchmark(self.sample_data, data_source="source_1")
         models = benchmark.get_models()
         self.assertEqual(len(models), 3)
 
     def test_get_scenarios(self):
-        benchmark = Benchmark(self.sample_data)
+        benchmark = Benchmark(self.sample_data, data_source="test_source")
         scenarios = benchmark.get_scenarios()
         self.assertEqual(len(scenarios), 2)
 
@@ -95,6 +98,7 @@ class TestBenchmark(unittest.TestCase):
                 "source2",
                 "source2",
             ],
+            "aggragated_from": [[] for _ in range(6)],  # Added missing column
         }
         df = pd.DataFrame(data)
         benchmark = Benchmark(df)
@@ -102,7 +106,7 @@ class TestBenchmark(unittest.TestCase):
         self.assertEqual(len(benchmark.df), 3)
 
     def test_add_tags(self):
-        benchmark = Benchmark(self.sample_data, "source")
+        benchmark = Benchmark(self.sample_data, data_source="test_source")
         benchmark.add_tags()
         self.assertIn("tag", benchmark.df.columns)
         self.assertEqual(benchmark.df["tag"].iloc[0], "holistic")
