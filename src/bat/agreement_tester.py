@@ -38,7 +38,7 @@ class Tester:
         if single_source_scenario:
             assert (
                 single_source_scenario in used_scenarios
-            ), f"single_source_scenario requested {single_source_scenario} does not appear as a scenario in the benchmar"
+            ), f"single_source_scenario requested {single_source_scenario} does not appear as a scenario in the benchmark"
             scenario_pairs = [
                 (a, b) for a, b in scenario_pairs if single_source_scenario in [a, b]
             ]
