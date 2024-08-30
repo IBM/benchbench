@@ -96,16 +96,17 @@ class Reporter:
         )
         plt.xticks(rotation=90)
         plt.tight_layout()
-        plt.savefig("figures/temp.png")
-        plt.clf()
+        plt.show(block=True)
+        # plt.savefig("figures/temp.png")
+        # plt.clf()
 
         # Pivoting the data
-        # correlation_pivot = grouped[
-        #     ["scenario", "ref_scenario", "correlation_mean"]
-        # ].pivot(index="scenario", columns="ref_scenario")
-        # p_value_pivot = grouped[["scenario", "ref_scenario", "p_value_mean"]].pivot(
-        #     index="scenario", columns="ref_scenario"
-        # )
+        correlation_pivot = grouped[
+            ["scenario", "ref_scenario", "correlation_mean"]
+        ].pivot(index="scenario", columns="ref_scenario")
+        p_value_pivot = grouped[["scenario", "ref_scenario", "p_value_mean"]].pivot(
+            index="scenario", columns="ref_scenario"
+        )
 
         # # Creating a combined annotation DataFrame
         # combined_annotations = (
@@ -114,16 +115,18 @@ class Reporter:
         #     + p_value_pivot["p_value_mean"].round(2).astype(str)
         # )
 
-        # # plt.figure(figsize=(28, 20))
-        # sns.heatmap(
-        #     correlation_pivot,
-        #     annot=True,  # combined_annotations,
-        #     fmt="",  # Treat annotations as strings
-        #     cmap="coolwarm",  # Adjust color map as needed
-        #     xticklabels=True,
-        #     yticklabels=True,
-        # )
-        # plt.show()
+        # plt.figure(figsize=(28, 20))
+        correlation_pivot
+        sns.heatmap(
+            correlation_pivot.round(2),
+            annot=True,  # combined_annotations,
+            fmt="",  # Treat annotations as strings
+            cmap="coolwarm",  # Adjust color map as needed
+            xticklabels=True,
+            # yticklabels=True,
+        )
+        plt.tight_layout()
+        plt.show(block=True)
 
     @staticmethod
     def filter_with_sources(agreements, ref_sources, scenario_sources):

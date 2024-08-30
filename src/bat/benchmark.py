@@ -4,7 +4,6 @@ from pathlib import Path
 import matplotlib.pyplot as plt
 import pandas as pd
 import seaborn as sns
-from fuzzywuzzy import fuzz, process
 
 benchmark2tag = {
     "arena_hard": "holistic",
@@ -140,10 +139,9 @@ benchmark2tag = {
 
 class Benchmark:
     def __init__(self, df=pd.DataFrame(), data_source=None):
-        if len(df) == 0:
-            self.is_empty = True
-            self.df = None
-        else:
+        self.is_empty = True
+        self.df = None
+        if len(df) > 0:
             self.assign_df(df, data_source)
 
     def load_local_catalog(self, catalog_rel_path="assets/benchmarks"):

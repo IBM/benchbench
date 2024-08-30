@@ -2,6 +2,8 @@ import pandas as pd
 from bat.utils import get_holistic_benchmark
 from bat import Tester, Benchmark, Config, Reporter
 
+reporter = Reporter()
+
 cfg = Config(
     exp_to_run="example",
     n_models_taken_list=[0],
@@ -23,7 +25,8 @@ newbench = Benchmark(
     data_source=newbench_name,
 )
 
-reporter = Reporter()
+inside_agreements = tester.all_vs_all_agreement_testing(newbench)
+reporter.draw_agreements(inside_agreements)
 
 newbench.df = newbench.df.query('scenario=="livebench_lb"')
 
