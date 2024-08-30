@@ -139,6 +139,118 @@ benchmark2tag = {
 }
 
 
+def get_nice_benchmark_name(bench_name):
+    prettified_names = {
+        "holmes": "Holmes",
+        "helm_lite_narrativeqa": "Helm Lite NarrativeQA",
+        "helm_lite_naturalquestionsopen": "Helm Lite NaturalQuestionsOpen",
+        "helm_lite_naturalquestionsclosed": "Helm Lite NaturalQuestionsClosed",
+        "helm_lite_openbookqa": "Helm Lite OpenBookQA",
+        "helm_lite_mmlu": "Helm Lite MMLU",
+        "helm_lite_math_equivalentcot": "Helm Lite MathEquivalentCOT",
+        "helm_lite_gsm8k": "Helm Lite GSM8K",
+        "helm_lite_legalbench": "Helm Lite LegalBench",
+        "helm_lite_medqa": "Helm Lite MedQA",
+        "helm_lite_wmt2014": "Helm Lite WMT2014",
+        "hfv2_bbh": "HFv2 BBH",
+        "hfv2_bbh_raw": "HFv2 BBH Raw",
+        "hfv2_gpqa": "HFv2 GPQA",
+        "hfv2_ifeval": "HFv2 IFEval",
+        "hfv2_math_lvl_5": "HFv2 Math Level 5",
+        "hfv2_mmlu_pro": "HFv2 MMLU Pro",
+        "hfv2_musr": "HFv2 MuSR",
+        "oc_mmlu": "OpenCompass MMLU",
+        "oc_mmlu_pro": "OpenCompass MMLU Pro",
+        "oc_cmmlu": "OpenCompass CMMLU",
+        "oc_bbh": "OpenCompass BBH",
+        "oc_gqpa_dimand": "OpenCompass GQPA-Dimand",
+        "oc_humaneval": "OpenCompass HumanEval",
+        "oc_ifeval": "OpenCompass IFEval",
+        "helm_mmlu": "Helm MMLU",
+        "helm_boolq": "Helm BoolQ",
+        "helm_narrativeqa": "Helm NarrativeQA",
+        "helm_naturalquestionsclosed": "Helm NaturalQuestionsClosed",
+        "helm_naturalquestionsopen": "Helm NaturalQuestionsOpen",
+        "helm_quac": "Helm QuAC",
+        "helm_openbookqa": "Helm OpenBookQA",
+        "helm_imdb": "Helm IMDB",
+        "helm_civilcomments": "Helm CivilComments",
+        "helm_raft": "Helm RAFT",
+        "mmlu_pro": "MMLU Pro",
+        "mixeval_triviaqa": "MixEval TriviaQA",
+        "mixeval_mmlu": "MixEval MMLU",
+        "mixeval_drop": "MixEval DROP",
+        "mixeval_hellaswag": "MixEval HellaSwag",
+        "mixeval_commonsenseqa": "MixEval CommonsenseQA",
+        "mixeval_triviaqa_hard": "MixEval TriviaQA Hard",
+        "mixeval_mmlu_hard": "MixEval MMLU Hard",
+        "mixeval_drop_hard": "MixEval DROP Hard",
+        "oc_language": "OpenCompass Language",
+        "oc_knowledge": "OpenCompass Knowledge",
+        "oc_reasoning": "OpenCompass Reasoning",
+        "oc_math": "OpenCompass Math",
+        "oc_code": "OpenCompass Code",
+        "oc_instruct": "OpenCompass Instruction",
+        "oc_agent": "OpenCompass Agent",
+        "oc_arena": "OpenCompass Arena",
+        "lb_reasoning": "LiveBench Reasoning",
+        "lb_coding": "LiveBench Coding",
+        "lb_mathematics": "LiveBench Mathematics",
+        "lb_data_analysis": "LiveBench Data Analysis",
+        "lb_language": "LiveBench Language",
+        "lb_if": "LiveBench Instruction Following",
+        "wb_info_seek": "WildBench Information Seeking",
+        "wb_creative": "WildBench Creative",
+        "wb_code_debug": "WildBench Code Debugging",
+        "wb_math_data": "WildBench Math & Data",
+        "wb_reason_plan": "WildBench Reasoning & Planning",
+        "wb_score": "WildBench Score",
+        "hfv1_arc": "HFv1 ARC",
+        "hfv1_gsm8k": "HFv1 GSM8K",
+        "hfv1_hellaswag": "HFv1 HellaSwag",
+        "hfv1_mmlu": "HFv1 MMLU",
+        "hfv1_truthfulqa": "HFv1 TruthfulQA",
+        "hfv1_winogrande": "HFv1 Winogrande",
+        "biggen_grounding": "BigBench Grounding",
+        "biggen_instruction_following": "BigBench Instruction Following",
+        "biggen_planning": "BigBench Planning",
+        "biggen_reasoning": "BigBench Reasoning",
+        "biggen_refinement": "BigBench Refinement",
+        "biggen_safety": "BigBench Safety",
+        "biggen_theory_of_mind": "BigBench Theory of Mind",
+        "biggen_tool_usage": "BigBench Tool Usage",
+        "biggen_multilingual": "BigBench Multilingual",
+        "lb_reasoning_average": "LiveBench Reasoning Average",
+        "lb_coding_average": "LiveBench Coding Average",
+        "lb_mathematics_average": "LiveBench Mathematics Average",
+        "lb_data_analysis_average": "LiveBench Data Analysis Average",
+        "lb_language_average": "LiveBench Language Average",
+        "lb_if_average": "LiveBench Instruction Following Average",
+        "helm_lite": "Helm Lite",
+        "hf_open_llm_v2": "HF OpenLLM v2",
+        "opencompass_academic": "OpenCompass Academic",
+        "arena_elo": "Arena Elo",
+        "helm_classic": "Helm Classic",
+        "mixeval": "MixEval",
+        "mixeval_hard": "MixEval Hard",
+        "opencompass": "OpenCompass",
+        "alphacaeval_v2lc": "AlphacaEval v2lc",
+        "livebench_240725": "LiveBench 240725",
+        "wb_elo_lc": "WildBench Elo LC",
+        "arena_hard": "Arena Hard",
+        "agentbench": "AgentBench",
+        "hf_open_llm_v1": "HF OpenLLM v1",
+        "biggen": "BigBench",
+        "livebench_240624": "LiveBench 240624",
+        "mt_bench": "MT-Bench",
+    }
+
+    if bench_name in prettified_names:
+        return prettified_names[bench_name]
+    else:
+        return bench_name
+
+
 class Benchmark:
     def __init__(self, df=pd.DataFrame(), data_source=None):
         self.is_empty = True
@@ -157,6 +269,8 @@ class Benchmark:
                     data_source=file_name,
                 )
             )
+
+        self.df = self.df.query('scenario != "arena_elo0527"')
 
     def assign_df(self, df, data_source):
         assert (
@@ -345,7 +459,7 @@ class Benchmark:
             .replace("-", "_")
         )
 
-        return name
+        return get_nice_benchmark_name(name)
 
     @staticmethod
     def standardize_model_name(name):
