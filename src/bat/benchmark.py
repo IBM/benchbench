@@ -5,6 +5,8 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import seaborn as sns
 
+import numpy as np
+
 benchmark2tag = {
     "arena_hard": "holistic",
     "mixeval_hard": "holistic",
@@ -142,15 +144,33 @@ class Benchmark:
         self.is_empty = True
         self.df = None
         if len(df) > 0:
+            assert data_source, "A datasource must be inputted with a df"
             self.assign_df(df, data_source)
 
     def load_local_catalog(self, catalog_rel_path="assets/benchmarks"):
         catalog_path = os.path.join(Path(__file__).parent, catalog_rel_path)
 
-        for file_path in os.listdir(catalog_path):
-            self.extend(Benchmark(pd.read_csv(os.path.join(catalog_path, file_path))))
+        for file_name in os.listdir(catalog_path):
+            self.extend(
+                Benchmark(
+                    pd.read_csv(os.path.join(catalog_path, file_name)),
+                    data_source=file_name,
+                )
+            )
 
     def assign_df(self, df, data_source):
+        assert (
+            df.columns[0] == "model"
+        ), f'the zeroth df column mush be "model", instead, got {df.columns[0]}'
+
+        if "scenario" not in df.columns:
+            # Assuming the first column is 'model' and the rest are scenarios
+            df = pd.melt(df, id_vars=["model"], var_name="scenario", value_name="score")
+
+        df.replace("-", np.nan, inplace=True)
+        df.dropna()
+        df["score"] = df["score"].astype(float, errors="ignore")
+
         df["model"] = df["model"].apply(self.standardize_model_name)
         df["scenario"] = df["scenario"].apply(self.standardize_scenario_name)
         df["aggragated_from"] = [[] for _ in range(len(df))]
@@ -290,7 +310,14 @@ class Benchmark:
             )
             == 0
         ):
-            raise ValueError("a model appears more than once for a single scenario")
+            # raise ValueError("a model appears more than once for a single scenario")
+            # Group by the columns you want to check for duplicates and keep the row with the highest score
+            self.df = self.df.groupby(["model", "scenario", "source"], as_index=False)[
+                "score"
+            ].max()
+            print(
+                "Warning: Duplicate entries found. Keeping rows with the best scores."
+            )
 
         if not pd.api.types.is_numeric_dtype(self.df["score"]):
             raise ValueError("score must be numeric")
@@ -335,6 +362,9 @@ class Benchmark:
             .replace("dbrx-inst", "dbrx-instruct")
             .replace("-hf", "")
             .replace("-", "_")
+            .replace("llama_3", "llama3")
+            .replace("ul2", "flan-ul2")
+            .split("/")[-1]
         )
         return name
 
@@ -461,3 +491,4 @@ class Benchmark:
 if __name__ == "__main__":
     b = Benchmark()
     b.load_local_catalog()
+    print()
