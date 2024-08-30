@@ -173,7 +173,12 @@ class Reporter:
             ):
                 continue
 
-            z_score, corr_with_agg, p_value_of_corr_with_agg = Reporter.get_z_score(
+            (
+                z_score,
+                corr_with_agg,
+                p_value_of_corr_with_agg,
+                n_models_of_corr_with_agg,
+            ) = Reporter.get_z_score(
                 agreements=agreements,
                 observed_scenario=observed_scenario,
                 aggragate_name="aggregate",
@@ -185,6 +190,7 @@ class Reporter:
                     "z_score": z_score,
                     "corr_with_agg": corr_with_agg,
                     "p_value_of_corr_with_agg": p_value_of_corr_with_agg,
+                    "n_models_of_corr_with_agg": n_models_of_corr_with_agg,
                     "source": agreements.query("scenario==@observed_scenario")[
                         "scenario_source"
                     ].iloc[0],
@@ -220,6 +226,7 @@ class Reporter:
             .agg(
                 correlation_mean=("correlation", "mean"),
                 p_value_mean=("p_value", "mean"),
+                n_models_mean=("model_subset_size_requested", "mean"),
             )
         )
 
@@ -228,48 +235,20 @@ class Reporter:
         ).agg(
             correlation_mean=("correlation", "mean"),
             p_value_mean=("p_value", "mean"),
+            n_models_mean=("model_subset_size_requested", "mean"),
         )
 
         obs_agreements_with_agg = float(obs_with_agg.iloc[0, 0])
         obs_agreements_with_agg_p_value = float(obs_with_agg.iloc[1, 1])
+        obs_agreements_with_agg_n_models = float(obs_with_agg.iloc[2, 2])
 
         ref_mean = ref_agreements_with_agg["correlation_mean"].mean()
         ref_std = ref_agreements_with_agg["correlation_mean"].std()
         z_score = float((obs_agreements_with_agg - ref_mean) / ref_std)
 
-        # # Create the plot
-        # plt.figure(figsize=(10, 6))
-        # sns.kdeplot(
-        #     ref_agreements_with_agg,
-        #     x="correlation_mean",
-        #     color="blue",
-        #     alpha=0.7,
-        #     label="Reference Values (KDE)",
-        # )
-        # plt.axvline(
-        #     x=ref_mean,
-        #     color="red",
-        #     linestyle="dashed",
-        #     linewidth=2,
-        #     label=f"Mean = {ref_mean:.2f}",
-        # )
-
-        # # Mark the observation
-        # plt.axvline(
-        #     x=obs_agreements_with_agg,
-        #     color="green",
-        #     linestyle="dashed",
-        #     linewidth=2,
-        #     label=f"Observation (z={z_score:.2f})",
-        # )
-
-        # # Add legend and labels
-        # plt.legend()
-        # plt.xlabel("Values")
-        # plt.ylabel("Density")
-        # plt.title("Distribution of Reference Values and Observation with KDE")
-
-        # # Show plot
-        # plt.savefig("figures/temp.png")
-
-        return z_score, obs_agreements_with_agg, obs_agreements_with_agg_p_value
+        return (
+            z_score,
+            obs_agreements_with_agg,
+            obs_agreements_with_agg_p_value,
+            obs_agreements_with_agg_n_models,
+        )
