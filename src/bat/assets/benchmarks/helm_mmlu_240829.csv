@@ -1,0 +1,60 @@
+model,helm_mmlu
+Claude 3.5 Sonnet (20240620),0.865
+Claude 3 Opus (20240229),0.846
+Llama 3.1 Instruct Turbo (405B),0.845
+GPT-4o (2024-05-13),0.842
+Gemini 1.5 Pro (001),0.827
+GPT-4 (0613),0.824
+Qwen2 Instruct (72B),0.824
+GPT-4 Turbo (2024-04-09),0.813
+Gemini 1.5 Pro (0409 preview),0.81
+Llama 3.1 Instruct Turbo (70B),0.801
+Mistral Large 2 (2407),0.8
+GPT-4 Turbo (1106 preview),0.796
+Llama 3 (70B),0.793
+Yi Large (Preview),0.793
+Palmyra X V3 (72B),0.786
+PaLM-2 (Unicorn),0.786
+Gemini 1.5 Flash (001),0.779
+Mixtral (8x22B),0.778
+Gemini 1.5 Flash (0514 preview),0.778
+Phi-3 (14B),0.775
+Qwen1.5 (72B),0.774
+Qwen1.5 Chat (110B),0.768
+GPT-4o mini (2024-07-18),0.767
+Yi (34B),0.762
+Claude 3 Sonnet (20240229),0.759
+Gemma 2 (27B),0.757
+Phi-3 (7B),0.757
+Qwen1.5 (32B),0.744
+DBRX Instruct,0.741
+Claude 3 Haiku (20240307),0.738
+Claude 2.1,0.735
+DeepSeek LLM Chat (67B),0.725
+Gemma 2 (9B),0.721
+Mixtral (8x7B 32K seqlen),0.717
+Gemini 1.0 Pro (001),0.7
+Llama 2 (70B),0.695
+Command R Plus,0.694
+PaLM-2 (Bison),0.692
+GPT-3.5 Turbo (0613),0.689
+Claude Instant 1.2,0.688
+Mistral Large (2402),0.688
+Mistral Small (2402),0.687
+Qwen1.5 (14B),0.686
+Arctic Instruct,0.677
+Llama 3 (8B),0.668
+Gemma (7B),0.661
+Jamba Instruct,0.659
+Mistral NeMo (2402),0.653
+Command R,0.652
+Yi (6B),0.64
+Qwen1.5 (7B),0.626
+Mistral Instruct v0.3 (7B),0.599
+Phi-2,0.584
+Mistral v0.1 (7B),0.566
+Llama 3.1 Instruct Turbo (8B),0.561
+Llama 2 (13B),0.554
+OLMo 1.7 (7B),0.538
+Llama 2 (7B),0.458
+OLMo (7B),0.295
