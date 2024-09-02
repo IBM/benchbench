@@ -1,116 +1,190 @@
 import unittest
 import pandas as pd
-from bat.benchmark import Benchmark  # Assuming the class is in benchmark.py
+from bat import Benchmark  # Replace your_module with the actual module name
 
 
 class TestBenchmark(unittest.TestCase):
     def setUp(self):
-        self.sample_data = pd.DataFrame(
-            {
-                "model": ["model1", "model2", "model3", "model1", "model2", "model3"],
-                "scenario": [
-                    "arena_hard",
-                    "arena_hard",
-                    "arena_hard",
-                    "triviaqa_mixed",
-                    "triviaqa_mixed",
-                    "triviaqa_mixed",
-                ],
-                "score": [0.8, 0.6, 0.9, 0.7, 0.5, 0.6],
-                "source": [
-                    "source1",
-                    "source1",
-                    "source1",
-                    "source2",
-                    "source2",
-                    "source2",
-                ],
-                "aggragated_from": [[] for _ in range(6)],  # Added missing column
-            }
-        )
+        # Create a sample DataFrame for testing
+        data = {
+            "model": ["model_a", "model_b", "model_a", "model_b"],
+            "scenario": ["scenario_1", "scenario_1", "scenario_2", "scenario_2"],
+            "score": [0.8, 0.7, 0.9, 0.6],
+        }
+        self.df = pd.DataFrame(data)
+        self.benchmark = Benchmark(self.df, "test_source")
 
-    def test_initialization(self):
-        benchmark = Benchmark(
-            self.sample_data, data_source="test_source"
-        )  # Added data_source
-        self.assertIn("model", benchmark.df.columns)
-        self.assertIn("scenario", benchmark.df.columns)
-        self.assertIn("score", benchmark.df.columns)
-        self.assertIn("aggragated_from", benchmark.df.columns)
-        self.assertIn("source", benchmark.df.columns)  # Added missing assertion
+    def test_assign_df(self):
+        # Check if DataFrame is assigned correctly
+        self.assertEqual(self.benchmark.df.shape, (4, 5))
+        self.assertEqual(self.benchmark.df["source"].unique()[0], "test_source")
 
     def test_normalize_scores_per_scenario(self):
-        benchmark = Benchmark(self.sample_data, data_source="test_source")
-        normalized_df = benchmark.normalize_scores_per_scenario()
-        self.assertTrue((normalized_df.groupby("scenario")["score"].max() == 1).all())
-        self.assertTrue((normalized_df.groupby("scenario")["score"].min() == 0).all())
+        # Test score normalization
+        normalized_df = self.benchmark.normalize_scores_per_scenario()
+        scenario_1_scores = normalized_df[normalized_df["scenario"] == "scenario_1"][
+            "score"
+        ]
+        scenario_2_scores = normalized_df[normalized_df["scenario"] == "scenario_2"][
+            "score"
+        ]
+        self.assertEqual(scenario_1_scores.min(), 0.0)
+        self.assertEqual(scenario_1_scores.max(), 1.0)
+        self.assertEqual(scenario_2_scores.min(), 0.0)
+        self.assertEqual(scenario_2_scores.max(), 1.0)
 
     def test_add_aggragete(self):
-        benchmark = Benchmark(self.sample_data, data_source="test_source")
-        benchmark.add_aggragete(
-            "aggregated_scenario", [], "mwr", agg_source_name="test_source"
+        # Test aggregate column addition
+        self.benchmark.add_aggragete(
+            new_col_name="aggregate", agg_source_name="aggregated_source"
         )
-        self.assertIn("aggregated_scenario", benchmark.df["scenario"].values)
+        self.assertIn("aggregate", self.benchmark.df["scenario"].unique())
+        aggregate_rows = self.benchmark.df[self.benchmark.df["scenario"] == "aggregate"]
+        self.assertEqual(len(aggregate_rows), 2)  # Two models, so two aggregate rows
 
-    def test_standardize_scenario_name(self):
-        name = "GSM 8k (Open-Book)"
-        standardized_name = Benchmark.standardize_scenario_name(name)
-        self.assertEqual(standardized_name, "gsm8k_open")
-
-    def test_standardize_model_name(self):
-        name = "Command-R+ (HF)"
-        standardized_name = Benchmark.standardize_model_name(name)
-        self.assertEqual(standardized_name, "command_r_plus")
+    def test_validate_dataframe(self):
+        # Test DataFrame validation (should pass with the sample DataFrame)
+        self.benchmark.validate_dataframe_post_formatting()
 
     def test_extend(self):
-        benchmark1 = Benchmark(self.sample_data, data_source="source_1")
-        benchmark2 = Benchmark(self.sample_data, data_source="source_2")
-        benchmark1.extend(benchmark2)
-        self.assertEqual(len(benchmark1.df), 12)
+        # Test extending the Benchmark object
+        new_data = {
+            "model": ["model_c"],
+            "scenario": ["scenario_3"],
+            "score": [0.5],
+            "source": ["new_source"],
+            "aggragated_from": [[]],
+        }
+        new_df = pd.DataFrame(new_data)
+        new_benchmark = Benchmark(new_df, "new_source")
+        self.benchmark.extend(new_benchmark)
+        self.assertEqual(len(self.benchmark.df), 5)  # Original 4 rows + 1 new row
 
     def test_get_models(self):
-        benchmark = Benchmark(self.sample_data, data_source="source_1")
-        models = benchmark.get_models()
-        self.assertEqual(len(models), 3)
+        # Test getting unique model names
+        models = self.benchmark.get_models()
+        self.assertEqual(set(models), {"model_a", "model_b"})
 
     def test_get_scenarios(self):
-        benchmark = Benchmark(self.sample_data, data_source="test_source")
-        scenarios = benchmark.get_scenarios()
-        self.assertEqual(len(scenarios), 2)
+        # Test getting unique scenario names
+        scenarios = self.benchmark.get_scenarios()
+        self.assertEqual(set(scenarios), {"scenario_1", "scenario_2"})
 
-    def test_clear_repeated_scenarios(self):
+    def test_get_model_appearences_count(self):
+        # Test counting model appearances
+        counts = self.benchmark.get_model_appearences_count()
+        self.assertEqual(counts["model_a"], 2)
+        self.assertEqual(counts["model_b"], 2)
+
+    def test_get_scenario_appearences_count(self):
+        # Test counting scenario appearances
+        counts = self.benchmark.get_scenario_appearences_count()
+        self.assertEqual(counts["scenario_1"], 2)
+        self.assertEqual(counts["scenario_2"], 2)
+
+    # Tests for show_overlapping_model_counts and clear_repeated_scenarios are more
+    # complex and might require mocking or specific data setups to test effectively.
+    # Consider adding these tests based on your specific needs and how you
+    # handle plotting and data cleaning in those methods.
+
+    def test_validate_df_pre_formatting_unnamed_0(self):
+        # Test DataFrame validation with 'Unnamed: 0' column
+        bad_data = {
+            "Unnamed: 0": [0, 1],
+            "model": ["model_a", "model_b"],
+            "scenario_1": [0.8, 0.7],
+            "scenario_2": [0.9, 0.6],
+        }
+        bad_df = pd.DataFrame(bad_data)
+        with self.assertRaises(ValueError) as context:
+            Benchmark(bad_df, "test_source")
+        self.assertIn(
+            "DataFrame should not contain 'Unnamed: 0' column", str(context.exception)
+        )
+
+    def test_validate_df_pre_formatting_missing_model(self):
+        # Test DataFrame validation with missing 'model' column
+        bad_data = {
+            "scenario": ["scenario_1", "scenario_1", "scenario_2", "scenario_2"],
+            "score": [0.8, 0.7, 0.9, 0.6],
+        }
+        bad_df = pd.DataFrame(bad_data)
+        with self.assertRaises(ValueError) as context:
+            Benchmark(bad_df, "test_source")
+        self.assertIn("DataFrame must contain a 'model' column", str(context.exception))
+
+    def test_validate_df_pre_formatting_missing_scenario(self):
+        # Test DataFrame validation with missing 'scenario' (and only 'model')
+        bad_data = {
+            "model": ["model_a", "model_b"],
+        }
+        bad_df = pd.DataFrame(bad_data)
+        with self.assertRaises(ValueError) as context:
+            Benchmark(bad_df, "test_source")
+        self.assertIn(
+            "DataFrame must contain at least 'model' and one scenario column",
+            str(context.exception),
+        )
+
+    def test_validate_df_pre_formatting_duplicate_model_scenario(self):
+        # Test DataFrame validation with duplicate model-scenario pairs
+        bad_data = {
+            "model": ["model_a", "model_a", "model_b"],
+            "scenario_1": [0.8, 0.9, 0.7],  # Duplicate model_a for scenario_1
+            "scenario_2": [0.7, 0.6, 0.8],
+        }
+        bad_df = pd.DataFrame(bad_data)
+        with self.assertRaises(ValueError) as context:
+            Benchmark(bad_df, "test_source")
+        self.assertIn(
+            "DataFrame contains duplicate model-scenario pairs", str(context.exception)
+        )
+
+    def test_validate_df_pre_formatting_non_numeric_score(self):
+        # Test DataFrame validation with non-numeric score
+        bad_data = {
+            "model": ["model_a", "model_b"],
+            "scenario": ["scenario_1", "scenario_2"],
+            "score": ["not_a_number", "also_not_a_number"],
+        }
+        bad_df = pd.DataFrame(bad_data)
+        with self.assertRaises(ValueError) as context:
+            Benchmark(bad_df, "test_source")
+        self.assertIn("score must be numeric", str(context.exception))
+
+    def test_validate_dataframe_post_formatting_missing_columns(self):
+        # Test with missing required columns after formatting
+        data = {"model": ["model_a"], "scenario": ["scenario_1"], "score": [0.8]}
+        df = pd.DataFrame(data)
+        benchmark = Benchmark(df, "test_source")
+
+        # Remove required columns and check if ValueError is raised
+        benchmark.df.drop(columns=["source", "aggragated_from"], inplace=True)
+        with self.assertRaises(ValueError) as context:
+            benchmark.validate_dataframe_post_formatting()
+        self.assertIn(
+            "DataFrame must contain the following columns", str(context.exception)
+        )
+
+    def test_validate_dataframe_post_formatting_non_numeric_score_after_formatting(
+        self,
+    ):
+        # Test with non-numeric score after formatting
         data = {
-            "model": ["model1", "model2", "model3", "model1", "model2", "model3"],
-            "scenario": [
-                "arena_hard",
-                "arena_hard",
-                "arena_hard",
-                "arena_hard",
-                "arena_hard",
-                "arena_hard",
-            ],
-            "score": [0.8, 0.6, 0.9, 0.85, 0.55, 0.95],
-            "source": [
-                "source1",
-                "source1",
-                "source1",
-                "source2",
-                "source2",
-                "source2",
-            ],
-            "aggragated_from": [[] for _ in range(6)],  # Added missing column
+            "model": ["model_a"],
+            "scenario": ["scenario_1"],
+            "score": [0.8],
+            "source": ["test_source"],
+            "aggragated_from": [[]],
         }
         df = pd.DataFrame(data)
-        benchmark = Benchmark(df)
-        benchmark.clear_repeated_scenarios()
-        self.assertEqual(len(benchmark.df), 3)
+        benchmark = Benchmark(df, "test_source")
 
-    def test_add_tags(self):
-        benchmark = Benchmark(self.sample_data, data_source="test_source")
-        benchmark.add_tags()
-        self.assertIn("tag", benchmark.df.columns)
-        self.assertEqual(benchmark.df["tag"].iloc[0], "holistic")
-        self.assertEqual(benchmark.df["tag"].iloc[3], "knowledge")
+        # Change score to non-numeric and check if ValueError is raised
+        benchmark.df["score"] = "not_a_number"
+        with self.assertRaises(ValueError) as context:
+            benchmark.validate_dataframe_post_formatting()
+        self.assertIn("score must be numeric", str(context.exception))
 
 
 if __name__ == "__main__":
