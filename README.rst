@@ -6,6 +6,8 @@ Overview
 --------
 The BAT package is designed to facilitate benchmark agreement testing for NLP models. It allows users to easily compare multiple models against various benchmarks and generate comprehensive reports on their agreement.
 
+It also supports `BenchBench <https://huggingface.co/spaces/ibm/benchbench>`_ the benchmark to compare benchmarks.
+
 Installation
 ------------
 To install the BAT package, you can use pip::
