@@ -7,137 +7,6 @@ import seaborn as sns
 
 import numpy as np
 
-benchmark2tag = {
-    "arena_hard": "holistic",
-    "mixeval_hard": "holistic",
-    "mixeval_hard_mixed": "holistic",
-    "mixeval": "holistic",
-    "arena_elo": "holistic",
-    "arena_elo_mixed": "holistic",
-    "agieval": "holistic",
-    "bbh": "holistic",
-    "oc1_mwr": "holistic",
-    "oc2_mwr": "holistic",
-    "alpacav1": "holistic",
-    "alpacav2": "holistic",
-    "alpacaeval2_lc": "holistic",
-    "eq_benchv2": "holistic",
-    "gpt4all": "holistic",
-    "hugging_6": "holistic",
-    "llmonitor": "holistic",
-    "magi": "holistic",
-    "mt_bench": "holistic",
-    "helm_lite_mwr": "holistic",
-    "helm_mwr": "holistic",
-    "biggen_mwr": "holistic",
-    "wildbench_mix": "holistic",
-    "wildbench_gpt4t": "holistic",
-    "wildbench_haiku": "holistic",
-    "wildbench_llama2": "holistic",
-    "wb_score": "holistic",
-    "olmes_average": "holistic",
-    "livebench_average": "holistic",
-    #
-    "triviaqa_mixed": "knowledge",
-    "mmlu_mixed": "knowledge",
-    "triviaqa_hard_mixed": "knowledge",
-    "triviaqa_hard": "knowledge",
-    "mmlu_hard_mixed": "knowledge",
-    "boolq_mixed": "knowledge",
-    "boolq": "knowledge",
-    "triviaqa": "knowledge",
-    "naturalquestions": "knowledge",
-    "mmlu": "knowledge",
-    "mmlu_hard": "knowledge",
-    "record": "knowledge",
-    "openbookqa": "knowledge",
-    "truthfulqa": "knowledge",
-    "narrativeqa": "knowledge",
-    "naturalquestions_open": "knowledge",
-    "naturalquestions_closed": "knowledge",
-    "legalbench": "knowledge",
-    "medqa": "knowledge",
-    "csqa": "knowledge",
-    "mmlu_pro": "knowledge",
-    "data_analysis_average": "knowledge",
-    "high_en": "knowledge",
-    "middle_en": "knowledge",
-    "primary_en": "knowledge",
-    #
-    "drop_mixed": "reasoning",
-    "hellaswag_mixed": "reasoning",
-    "commonsenseqa_mixed": "reasoning",
-    "drop_hard_mixed": "reasoning",
-    "drop_hard": "reasoning",
-    "commonsenseqa": "reasoning",
-    "hellaswag": "reasoning",
-    "piqa": "reasoning",
-    "drop": "reasoning",
-    "copa": "reasoning",
-    "wic": "reasoning",
-    "wsc": "reasoning",
-    "winogrande": "reasoning",
-    "theory_of_mind": "reasoning",
-    "arc_c": "reasoning",
-    "arc_e": "reasoning",
-    "intention_recognition_en": "reasoning",
-    "reasoning_average": "reasoning",
-    "reasoning": "reasoning",
-    #
-    "math": "math",
-    "gsm8k": "math",
-    "mathematics_average": "math",
-    #
-    "humaneval": "code",
-    "mbpp": "code",
-    "humaneval_plus_en": "code",
-    "sanitized_mbpp_en": "code",
-    "humaneval_x": "code",
-    "coding_average": "code",
-    #
-    "tydiqa": "mt",
-    "flores": "mt",
-    "translation": "mt",
-    "wmt_2014": "mt",
-    #
-    "agentbench_overall": "agent",
-    "agentbench_os": "agent",
-    "agentbench_db": "agent",
-    "agentbench_kg": "agent",
-    "agentbench_dcg": "agent",
-    "agentbench_ltp": "agent",
-    "agentbench_hh": "agent",
-    "agentbench_ws": "agent",
-    "agentbench_wb": "agent",
-    #
-    "ax_b": "other",
-    "ax_g": "other",
-    "rte": "other",
-    "siqa": "other",
-    "racemiddle": "other",
-    "racehigh": "other",
-    "xsum": "other",
-    "lambada": "other",
-    "teval_en": "other",
-    "sentiment_analysis_en": "other",
-    "content_summarization_en": "other",
-    "quac": "other",
-    "ms_marco_regular": "other",
-    "ms_marco_trec": "other",
-    "cnn/dailymail": "other",
-    "imdb": "other",
-    "civilcomments": "other",
-    "raft": "other",
-    "grounding": "other",
-    "instruction_following": "other",
-    "planning": "other",
-    "refinement": "other",
-    "safety": "other",
-    "tool_usage": "other",
-    "language_average": "other",
-    "if_average": "other",
-}
-
 
 def get_nice_benchmark_name(bench_name):
     prettified_names = {
@@ -257,6 +126,7 @@ class Benchmark:
         self.df = None
         if len(df) > 0:
             assert data_source, "A datasource must be inputted with a df"
+            self.validate_df_pre_formatting(df)
             self.assign_df(df, data_source)
 
     def load_local_catalog(self, catalog_rel_path="assets/benchmarks"):
@@ -269,8 +139,6 @@ class Benchmark:
                     data_source=file_name,
                 )
             )
-
-        self.df = self.df.query('scenario != "arena_elo0527"')
 
     def assign_df(self, df, data_source):
         assert (
@@ -292,7 +160,7 @@ class Benchmark:
             df["source"] = data_source
         self.df = df
         # self.add_tags()
-        self.validate_dataframe()
+        self.validate_dataframe_post_formatting()
         self.df.dropna(inplace=True)
         self.is_empty = False
 
@@ -393,7 +261,42 @@ class Benchmark:
 
         self.df = pd.concat([self.df, mean_df.drop(columns=["wr"])])
 
-    def validate_dataframe(self):
+    def validate_df_pre_formatting(self, df):
+        """
+        Validate the input DataFrame before formatting.
+        """
+        if "Unnamed: 0" in df.columns:
+            raise ValueError("DataFrame should not contain 'Unnamed: 0' column")
+
+        # Basic column checks
+        if "model" not in df.columns:
+            raise ValueError("DataFrame must contain a 'model' column")
+        if "scenario" not in df.columns and len(df.columns) < 2:
+            raise ValueError(
+                "DataFrame must contain at least 'model' and one scenario column or 'scenario' and 'score' column"
+            )
+
+        # Check for duplicate model-scenario pairs (before melting)
+        if "scenario" not in df.columns:
+            melted_df = pd.melt(
+                df, id_vars=["model"], var_name="scenario", value_name="score"
+            )
+            if (
+                not len(
+                    melted_df[
+                        melted_df.duplicated(subset=["model", "scenario"], keep=False)
+                    ]
+                )
+                == 0
+            ):
+                raise ValueError("DataFrame contains duplicate model-scenario pairs")
+
+        # Check if scores are numeric (if the score column exists)
+        if "score" in df.columns:
+            if not pd.api.types.is_numeric_dtype(df["score"]):
+                raise ValueError("score must be numeric")
+
+    def validate_dataframe_post_formatting(self):
         if "Unnamed: 0" in self.df.columns:
             self.df.drop(columns=["Unnamed: 0"], inplace=True)
 
@@ -598,9 +501,6 @@ class Benchmark:
         self.df.drop(
             columns=["scenario__source", "scenario__source_counts"], inplace=True
         )
-
-    def add_tags(self):
-        self.df["tag"] = self.df["scenario"].apply(lambda x: benchmark2tag[x])
 
 
 if __name__ == "__main__":
