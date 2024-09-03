@@ -31,7 +31,7 @@ reporter.draw_agreements(inside_agreements)
 newbench.df = newbench.df.query('scenario=="livebench_lb"')
 
 holistic = get_holistic_benchmark()
-holistic.add_aggragete(new_col_name="aggregate", agg_source_name="holistic")
+holistic.add_aggregate(new_col_name="aggregate", agg_source_name="holistic")
 
 allbench = newbench.extend(holistic)
 allbench.clear_repeated_scenarios(source_to_keep=newbench_name)

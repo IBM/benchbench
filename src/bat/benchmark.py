@@ -1,16 +1,15 @@
 import os
 from pathlib import Path
-from typing import List, Dict, Union
 
 import matplotlib.pyplot as plt
-import numpy as np
 import pandas as pd
 import seaborn as sns
-from pydantic import BaseModel, Field, validator
+
+import numpy as np
 
 
-def get_nice_benchmark_name(bench_name: str) -> str:
-    prettified_names: Dict[str, str] = {
+def get_nice_benchmark_name(bench_name):
+    prettified_names = {
         "holmes": "Holmes",
         "helm_lite_narrativeqa": "Helm Lite NarrativeQA",
         "helm_lite_naturalquestionsopen": "Helm Lite NaturalQuestionsOpen",
@@ -46,6 +45,9 @@ def get_nice_benchmark_name(bench_name: str) -> str:
         "helm_imdb": "Helm IMDB",
         "helm_civilcomments": "Helm CivilComments",
         "helm_raft": "Helm RAFT",
+        "helm_ms_marcoregular": "Helm MSMARCO Regular",
+        "helm_ms_marcotrec": "Helm MSMARCO Trec",
+        "xsum": "Helm XSUM",
         "mmlu_pro": "MMLU Pro",
         "mixeval_triviaqa": "MixEval TriviaQA",
         "mixeval_mmlu": "MixEval MMLU",
@@ -99,7 +101,7 @@ def get_nice_benchmark_name(bench_name: str) -> str:
         "helm_lite": "Helm Lite",
         "hf_open_llm_v2": "HF OpenLLM v2",
         "opencompass_academic": "OpenCompass Academic",
-        "arena_elo": "Arena Elo",
+        "arena_elo": "LMSys Arena",
         "helm_classic": "Helm Classic",
         "mixeval": "MixEval",
         "mixeval_hard": "MixEval Hard",
@@ -121,72 +123,17 @@ def get_nice_benchmark_name(bench_name: str) -> str:
         return bench_name
 
 
-class BenchmarkData(BaseModel):
-    model: str
-    scenario: str
-    score: float
-    aggragated_from: List[str] = Field(default_factory=list)
-    source: str
-
-    @validator("model")
-    def standardize_model_name(cls, name: str) -> str:
-        name = (
-            name.strip()
-            .lower()
-            .replace("   ", "-")
-            .replace("  ", "-")
-            .replace(" ", "-")
-            .replace("(", "")
-            .replace(")", "")
-            .replace("β", "beta")
-            .replace("command-r+", "command-r-plus")
-            .replace("dbrx-inst", "dbrx-instruct")
-            .replace("-hf", "")
-            .replace("-", "_")
-            .replace("llama_3", "llama3")
-            .replace("ul2", "flan-ul2")
-            .split("/")[-1]
-            .replace("meta_", "")
-        )
-        return name
-
-    @validator("scenario")
-    def standardize_scenario_name(cls, name: str) -> str:
-        name = (
-            name.strip()
-            .lower()
-            .replace("   ", "-")
-            .replace("  ", "-")
-            .replace(" ", "-")
-            .replace("(", "")
-            .replace(")", "")
-            .replace("gsm-8k", "gsm8k")
-            .replace("open-book", "open")
-            .replace("closed-book", "closed")
-            .replace("agi-eval", "agieval")
-            .replace("alpacaeval2-wr", "alpacav2")
-            .replace("alpacav2,-len-adj", "alpacaeval2-lc")
-            .replace("hswag", "hellaswag")
-            .replace("obqa", "openbookqa")
-            .replace("winogrande", "winog")
-            .replace("winog", "winogrande")
-            .replace("-", "_")
-        )
-
-        return get_nice_benchmark_name(name)
-
-
 class Benchmark:
-    def __init__(self, df: pd.DataFrame = pd.DataFrame(), data_source: str = None):
-        self.is_empty: bool = True
-        self.df: pd.DataFrame = None
+    def __init__(self, df=pd.DataFrame(), data_source=None):
+        self.is_empty = True
+        self.df = None
         if len(df) > 0:
             assert data_source, "A datasource must be inputted with a df"
             self.validate_df_pre_formatting(df)
             self.assign_df(df, data_source)
 
-    def load_local_catalog(self, catalog_rel_path: str = "assets/benchmarks"):
-        catalog_path: str = os.path.join(Path(__file__).parent, catalog_rel_path)
+    def load_local_catalog(self, catalog_rel_path="assets/benchmarks"):
+        catalog_path = os.path.join(Path(__file__).parent, catalog_rel_path)
 
         for file_name in os.listdir(catalog_path):
             self.extend(
@@ -196,7 +143,7 @@ class Benchmark:
                 )
             )
 
-    def assign_df(self, df: pd.DataFrame, data_source: str):
+    def assign_df(self, df, data_source):
         assert (
             df.columns[0] == "model"
         ), f'the zeroth df column mush be "model", instead, got {df.columns[0]}'
@@ -209,20 +156,18 @@ class Benchmark:
         df.dropna()
         df["score"] = df["score"].astype(float, errors="ignore")
 
-        # Use Pydantic for validation and standardization
-        data: List[BenchmarkData] = [BenchmarkData(**row) for row in df.dict("records")]
-        self.df = pd.DataFrame([item.dict() for item in data])
-
-        self.df["aggragated_from"] = [[] for _ in range(len(self.df))]
+        df["model"] = df["model"].apply(self.standardize_model_name)
+        df["scenario"] = df["scenario"].apply(self.standardize_scenario_name)
+        df["aggragated_from"] = [[] for _ in range(len(df))]
         if data_source:
-            self.df["source"] = data_source
-
+            df["source"] = data_source
+        self.df = df
         # self.add_tags()
         self.validate_dataframe_post_formatting()
         self.df.dropna(inplace=True)
         self.is_empty = False
 
-    def normalize_scores_per_scenario(self) -> pd.DataFrame:
+    def normalize_scores_per_scenario(self):
         """
         Normalize the 'score' column in the DataFrame to a 0-1 range within each scenario.
 
@@ -236,9 +181,9 @@ class Benchmark:
             raise ValueError("DataFrame must contain a 'score' column")
 
         # Apply normalization within each group defined by 'scenario'
-        def normalize(group: pd.DataFrame) -> pd.DataFrame:
-            min_score: float = group["score"].min()
-            max_score: float = group["score"].max()
+        def normalize(group):
+            min_score = group["score"].min()
+            max_score = group["score"].max()
             # Avoid division by zero in case all scores in a group are the same
             if max_score == min_score:
                 group["score"] = (
@@ -252,34 +197,43 @@ class Benchmark:
             normalize
         )
 
-    def add_aggragete(
+    def add_aggregate(
         self,
-        new_col_name: str,
-        scenario_blacklist: List[str] = [],
-        mean_or_mwr: str = "mwr",
-        agg_source_name: str = None,
-        min_scenario_for_models_to_appear_in_agg: int = 0,
+        new_col_name,
+        scenario_blacklist=[],
+        scenario_whitelist=[],
+        mean_or_mwr="mwr",
+        agg_source_name=None,
+        min_scenario_for_models_to_appear_in_agg=0,
     ):
-        def calculate_win_rate(series: pd.Series) -> pd.Series:
+        def calculate_win_rate(series):
             assert (
                 len(series) > 1
             ), "Error: tryting to get the mean win rate with only one column"
 
-            def win_rate(x: float) -> float:
-                win_count: int = sum(1 for value in series if x > value)
+            def win_rate(x):
+                win_count = sum(1 for value in series if x > value)
                 return win_count / (len(series) - 1)
 
             return series.transform(win_rate)
 
-        df_for_agg: pd.DataFrame = self.df.query("scenario not in @scenario_blacklist")
+        assert not (
+            scenario_blacklist and scenario_whitelist
+        ), "either scenario_blacklist or scenario_whitelist can be inputted, but not both"
+        if scenario_blacklist:
+            df_for_agg = self.df.query("scenario not in @scenario_blacklist")
+        elif scenario_whitelist:
+            df_for_agg = self.df.query("scenario in @scenario_whitelist")
+        else:
+            pass  # all scenarios are just used here
 
-        n_scenario_for_aggregate: int = len(df_for_agg["scenario"].unique())
+        n_scenario_for_aggregate = len(df_for_agg["scenario"].unique())
         min_scenario_for_models_to_appear_in_agg = min(
             min_scenario_for_models_to_appear_in_agg, n_scenario_for_aggregate
         )
 
         # remove models that appears in less then
-        models_to_consider: List[str] = (  # noqa: F841
+        models_to_consider = (  # noqa: F841
             df_for_agg.groupby(["model"])["scenario"]
             .count()
             .to_frame()
@@ -293,7 +247,7 @@ class Benchmark:
             calculate_win_rate
         )
 
-        mean_df: pd.DataFrame = (
+        mean_df = (
             df_for_agg.groupby(["model"])
             .agg({"score": "mean", "wr": "mean"})
             .reset_index()
@@ -319,7 +273,7 @@ class Benchmark:
 
         self.df = pd.concat([self.df, mean_df.drop(columns=["wr"])])
 
-    def validate_df_pre_formatting(self, df: pd.DataFrame):
+    def validate_df_pre_formatting(self, df):
         """
         Validate the input DataFrame before formatting.
         """
@@ -334,20 +288,20 @@ class Benchmark:
                 "DataFrame must contain at least 'model' and one scenario column or 'scenario' and 'score' column"
             )
 
-        # Check for duplicate model-scenario pairs (before melting)
-        if "scenario" not in df.columns:
-            melted_df: pd.DataFrame = pd.melt(
-                df, id_vars=["model"], var_name="scenario", value_name="score"
-            )
-            if (
-                not len(
-                    melted_df[
-                        melted_df.duplicated(subset=["model", "scenario"], keep=False)
-                    ]
-                )
-                == 0
-            ):
-                raise ValueError("DataFrame contains duplicate model-scenario pairs")
+        # # Check for duplicate model-scenario pairs (before melting)
+        # if "scenario" not in df.columns:
+        #     melted_df = pd.melt(
+        #         df, id_vars=["model"], var_name="scenario", value_name="score"
+        #     )
+        #     if (
+        #         not len(
+        #             melted_df[
+        #                 melted_df.duplicated(subset=["model", "scenario"], keep=False)
+        #             ]
+        #         )
+        #         == 0
+        #     ):
+        #         raise ValueError("DataFrame contains duplicate model-scenario pairs")
 
         # Check if scores are numeric (if the score column exists)
         if "score" in df.columns:
@@ -358,7 +312,7 @@ class Benchmark:
         if "Unnamed: 0" in self.df.columns:
             self.df.drop(columns=["Unnamed: 0"], inplace=True)
 
-        required_columns: List[str] = [
+        required_columns = [
             "model",
             "scenario",
             "score",
@@ -366,7 +320,7 @@ class Benchmark:
             "aggragated_from",
         ]
 
-        relevant_columns: List[str] = [
+        relevant_columns = [
             col_name for col_name in self.df.columns.tolist() if col_name != "tag"
         ]
         if sorted(relevant_columns) != sorted(required_columns):
@@ -397,7 +351,54 @@ class Benchmark:
         if not pd.api.types.is_numeric_dtype(self.df["score"]):
             raise ValueError("score must be numeric")
 
-    def extend(self, other: "Benchmark") -> "Benchmark":
+    @staticmethod
+    def standardize_scenario_name(name):
+        name = (
+            name.strip()
+            .lower()
+            .replace("   ", "-")
+            .replace("  ", "-")
+            .replace(" ", "-")
+            .replace("(", "")
+            .replace(")", "")
+            .replace("gsm-8k", "gsm8k")
+            .replace("open-book", "open")
+            .replace("closed-book", "closed")
+            .replace("agi-eval", "agieval")
+            .replace("alpacaeval2-wr", "alpacav2")
+            .replace("alpacav2,-len-adj", "alpacaeval2-lc")
+            .replace("hswag", "hellaswag")
+            .replace("obqa", "openbookqa")
+            .replace("winogrande", "winog")
+            .replace("winog", "winogrande")
+            .replace("-", "_")
+        )
+
+        return get_nice_benchmark_name(name)
+
+    @staticmethod
+    def standardize_model_name(name):
+        name = (
+            name.strip()
+            .lower()
+            .replace("   ", "-")
+            .replace("  ", "-")
+            .replace(" ", "-")
+            .replace("(", "")
+            .replace(")", "")
+            .replace("β", "beta")
+            .replace("command-r+", "command-r-plus")
+            .replace("dbrx-inst", "dbrx-instruct")
+            .replace("-hf", "")
+            .replace("-", "_")
+            .replace("llama_3", "llama3")
+            .replace("ul2", "flan-ul2")
+            .split("/")[-1]
+            .replace("meta_", "")
+        )
+        return name
+
+    def extend(self, other):
         if not isinstance(other, Benchmark):
             raise TypeError("The added object must be an instance of Benchmark")
 
@@ -408,13 +409,13 @@ class Benchmark:
 
         return self
 
-    def get_models(self) -> np.ndarray:
+    def get_models(self):
         return self.df["model"].unique()
 
-    def get_scenarios(self) -> np.ndarray:
+    def get_scenarios(self):
         return self.df["scenario"].unique()
 
-    def get_model_appearences_count(self) -> Dict[str, int]:
+    def get_model_appearences_count(self):
         return (
             self.df.groupby("model")["scenario"]
             .count()
@@ -422,7 +423,7 @@ class Benchmark:
             .to_dict()
         )
 
-    def get_scenario_appearences_count(self) -> Dict[str, int]:
+    def get_scenario_appearences_count(self):
         return (
             self.df.groupby("scenario")["model"]
             .count()
@@ -432,13 +433,13 @@ class Benchmark:
 
     def show_overlapping_model_counts(self):
         # Counting the occurrences of models for each scenario pair
-        cross_tab: pd.DataFrame = pd.crosstab(self.df["scenario"], self.df["model"])
+        cross_tab = pd.crosstab(self.df["scenario"], self.df["model"])
 
         # Compute the number of models shared between each pair of scenarios
-        scenario_combinations: pd.DataFrame = cross_tab.dot(cross_tab.T)
+        scenario_combinations = cross_tab.dot(cross_tab.T)
 
         # Sorting the scenarios based on total models
-        sorted_scenarios: pd.Index = (
+        sorted_scenarios = (
             scenario_combinations.sum(axis=1).sort_values(ascending=False).index
         )
         scenario_combinations = scenario_combinations.loc[
@@ -460,28 +461,26 @@ class Benchmark:
 
         plt.title("Heatmap of Model Count for Each Pair of Scenarios")
         plt.tight_layout()
-        save_path: str = "figures/show_overlapping_model_counts.png"
+        save_path = "figures/show_overlapping_model_counts.png"
         plt.savefig(save_path)
         plt.clf()
         print(f"saved to: {save_path}")
 
-    def clear_repeated_scenarios(self, source_to_keep: str = None):
+    def clear_repeated_scenarios(self, source_to_keep=None):
         self.df["scenario__source"] = self.df["scenario"] + "__" + self.df["source"]
         # Counting the occurrences of models for each scenario pair
-        cross_tab: pd.DataFrame = pd.crosstab(
-            self.df["scenario__source"], self.df["model"]
-        )
+        cross_tab = pd.crosstab(self.df["scenario__source"], self.df["model"])
 
         # Compute the number of models shared between each pair of scenarios
-        scenario_combinations: pd.DataFrame = cross_tab.dot(cross_tab.T)
+        scenario_combinations = cross_tab.dot(cross_tab.T)
 
         self.df["scenario__source_counts"] = self.df["scenario__source"].apply(
             lambda x: scenario_combinations.sum(axis=1)[x]
         )
 
         # scenario_counts = self.df.drop_duplicates(['scenario','source']).groupby(['scenario'])['source'].count()
-        scenarios_already_delt_with: List[str] = []
-        scenarios_source_to_drop: List[str] = []
+        scenarios_already_delt_with = []
+        scenarios_source_to_drop = []
         for scenario, scenario_df in self.df.drop_duplicates(
             ["scenario", "source"]
         ).groupby("scenario"):
@@ -491,7 +490,7 @@ class Benchmark:
 
             if len(scenario_df) > 1:
                 if source_to_keep and source_to_keep in scenario_df["source"]:
-                    scenario_source_to_keep: Union[pd.Series, str] = scenario_df.query(
+                    scenario_source_to_keep = scenario_df.query(
                         "source!=@source_to_keep"
                     )["scenario__source"]
                 else:
@@ -499,7 +498,7 @@ class Benchmark:
                         scenario_df["scenario__source_counts"].argmax()
                     ]["scenario__source"]
 
-                cur_scenarios_source_to_drop: List[str] = [
+                cur_scenarios_source_to_drop = [
                     scen_source
                     for scen_source in scenario_df["scenario__source"].unique().tolist()
                     if scen_source not in scenario_source_to_keep
@@ -517,6 +516,6 @@ class Benchmark:
 
 
 if __name__ == "__main__":
-    b: Benchmark = Benchmark()
+    b = Benchmark()
     b.load_local_catalog()
     print()
