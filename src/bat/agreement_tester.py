@@ -41,7 +41,7 @@ class Tester:
             ), f"single_source_scenario requested {single_source_scenario} does not appear as a scenario in the benchmark"
             scenario_pairs = [
                 (a, b) for a, b in scenario_pairs if single_source_scenario in [a, b]
-            ]
+            ]  # make sure only pairs with single_source_scenario are in the calculations
 
         # Iterate over each pair of scenarios
         for corr_type in self.cfg.corr_types:
