@@ -395,6 +395,9 @@ class Benchmark:
             .replace("ul2", "flan-ul2")
             .split("/")[-1]
             .replace("meta_", "")
+            .replace("v0.1", "v01")
+            .replace("v0.2", "v02")
+            .replace("v0.3", "v03")
         )
         return name
 
