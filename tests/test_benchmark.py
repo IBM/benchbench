@@ -35,7 +35,7 @@ class TestBenchmark(unittest.TestCase):
 
     def test_add_aggragete(self):
         # Test aggregate column addition
-        self.benchmark.add_aggragete(
+        self.benchmark.add_aggregate(
             new_col_name="aggregate", agg_source_name="aggregated_source"
         )
         self.assertIn("aggregate", self.benchmark.df["scenario"].unique())
