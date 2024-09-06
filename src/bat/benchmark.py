@@ -395,9 +395,11 @@ class Benchmark:
             .replace("ul2", "flan-ul2")
             .split("/")[-1]
             .replace("meta_", "")
-            .replace("v0.1", "v01")
-            .replace("v0.2", "v02")
-            .replace("v0.3", "v03")
+            .replace(".", "_")
+            .replace("v01", "v0_1")
+            .replace("v02", "v0_2")
+            .replace("v03", "v0_3")
+            .replace("wml/", "")
         )
         return name
 
