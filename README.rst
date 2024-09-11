@@ -1,31 +1,35 @@
 
-Benchmark Agreement Testing (BAT) Package
+Benchmark Agreement Testing: ``BAT`` Package
 =========================================
 
 Overview
 --------
-The BAT package is designed to facilitate benchmark agreement testing for NLP models. It allows users to easily compare multiple models against various benchmarks and generate comprehensive reports on their agreement.
+The ``BAT`` package is designed to facilitate benchmark agreement testing for NLP models. It allows users to easily compare multiple models against various benchmarks and generate comprehensive reports on their agreement.
 
 It also supports `BenchBench <https://huggingface.co/spaces/ibm/benchbench>`_ the benchmark to compare benchmarks.
 
 Installation
 ------------
-To install the BAT package, you can use pip::
+To install the ``BAT`` package, you can use pip:
+
+.. code-block:: bash
 
     pip install bat-package
 
 Usage Example
 -------------
-Below is a step-by-step example of how to use the BAT package to perform agreement testing.
+Below is a step-by-step example of how to use the ``BAT`` package to perform agreement testing.
 
 **Step 1: Configuration**
 
-First, set up the configuration for the tests::
+First, set up the configuration for the tests:
+
+.. code-block:: python
 
     import pandas as pd
     from bat import Tester, Config, Benchmark, Reporter
     from bat.utils import get_holistic_benchmark
-
+    
     cfg = Config(
         exp_to_run="example",
         n_models_taken_list=[0],
@@ -35,7 +39,9 @@ First, set up the configuration for the tests::
 
 **Step 2: Fetch Model Names**
 
-Fetch the names of the reference models to be used for scoring::
+Fetch the names of the reference models to be used for scoring:
+
+.. code-block:: python
 
     tester = Tester(cfg=cfg)
     models_for_benchmark_scoring = tester.fetch_reference_models_names(
@@ -45,7 +51,9 @@ Fetch the names of the reference models to be used for scoring::
 
 **Step 3: Load and Prepare Benchmark**
 
-Load a new benchmark and add an aggregate column::
+Load a new benchmark and add an aggregate column:
+
+.. code-block:: python
 
     newbench_name = "fakebench"
     newbench = Benchmark(
@@ -56,7 +64,9 @@ Load a new benchmark and add an aggregate column::
 
 **Step 4: Agreement Testing**
 
-Perform all-vs-all agreement testing on the new benchmark::
+Perform all-vs-all agreement testing on the new benchmark:
+
+.. code-block:: python
 
     newbench_agreements = tester.all_vs_all_agreement_testing(newbench)
     reporter = Reporter()
@@ -64,21 +74,25 @@ Perform all-vs-all agreement testing on the new benchmark::
 
 **Step 5: Extend and Clean Benchmark**
 
-Extend the new benchmark with holistic data and clear repeated scenarios::
+Extend the new benchmark with holistic data and clear repeated scenarios:
+
+.. code-block:: python
 
     allbench = newbench.extend(get_holistic_benchmark())
     allbench.clear_repeated_scenarios(source_to_keep=newbench_name)
 
 **Step 6: Comprehensive Agreement Testing**
 
-Perform comprehensive agreement testing and visualize::
+Perform comprehensive agreement testing and visualize:
+
+.. code-block:: python
 
     all_agreements = tester.all_vs_all_agreement_testing(allbench)
     reporter.draw_agreements(all_agreements)
 
 Contributing
 ------------
-Contributions to the BAT package are welcome! Please submit your pull requests or issues through our GitHub repository.
+Contributions to the ``BAT`` package are welcome! Please submit your pull requests or issues through our GitHub repository.
 
 License
 -------
