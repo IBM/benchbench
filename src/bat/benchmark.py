@@ -115,6 +115,7 @@ def get_nice_benchmark_name(bench_name):
         "biggen": "BIGGEN",
         "livebench_240624": "LiveBench 240624",
         "mt_bench": "MT-Bench",
+        "bfcl": "BFCL",
     }
 
     if bench_name in prettified_names:
@@ -124,13 +125,15 @@ def get_nice_benchmark_name(bench_name):
 
 
 class Benchmark:
-    def __init__(self, df=pd.DataFrame(), data_source=None):
+    def __init__(self, df=pd.DataFrame(), data_source=None, normalized_names=False):
         self.is_empty = True
         self.df = None
         if len(df) > 0:
-            assert data_source, "A datasource must be inputted with a df"
+            assert (
+                data_source or "source" in df.columns
+            ), "A datasource must be inputted with a df"
             self.validate_df_pre_formatting(df)
-            self.assign_df(df, data_source)
+            self.assign_df(df, data_source, normalized_names=normalized_names)
 
     def load_local_catalog(self, catalog_rel_path="assets/benchmarks"):
         catalog_path = os.path.join(Path(__file__).parent, catalog_rel_path)
@@ -143,7 +146,7 @@ class Benchmark:
                 )
             )
 
-    def assign_df(self, df, data_source):
+    def assign_df(self, df, data_source, normalized_names):
         assert (
             df.columns[0] == "model"
         ), f'the zeroth df column mush be "model", instead, got {df.columns[0]}'
@@ -156,13 +159,13 @@ class Benchmark:
         df.dropna()
         df["score"] = df["score"].astype(float, errors="ignore")
 
-        df["model"] = df["model"].apply(self.standardize_model_name)
-        df["scenario"] = df["scenario"].apply(self.standardize_scenario_name)
+        if not normalized_names:
+            df["model"] = df["model"].apply(self.standardize_model_name)
+            df["scenario"] = df["scenario"].apply(self.standardize_scenario_name)
         df["aggragated_from"] = [[] for _ in range(len(df))]
         if data_source:
             df["source"] = data_source
         self.df = df
-        # self.add_tags()
         self.validate_dataframe_post_formatting()
         self.df.dropna(inplace=True)
         self.is_empty = False
