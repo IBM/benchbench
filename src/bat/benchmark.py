@@ -4,163 +4,169 @@ from pathlib import Path
 import matplotlib.pyplot as plt
 import pandas as pd
 import seaborn as sns
-from fuzzywuzzy import fuzz, process
 
-benchmark2tag = {
-    "arena_hard": "holistic",
-    "mixeval_hard": "holistic",
-    "mixeval_hard_mixed": "holistic",
-    "mixeval": "holistic",
-    "arena_elo": "holistic",
-    "arena_elo_mixed": "holistic",
-    "agieval": "holistic",
-    "bbh": "holistic",
-    "oc1_mwr": "holistic",
-    "oc2_mwr": "holistic",
-    "alpacav1": "holistic",
-    "alpacav2": "holistic",
-    "alpacaeval2_lc": "holistic",
-    "eq_benchv2": "holistic",
-    "gpt4all": "holistic",
-    "hugging_6": "holistic",
-    "llmonitor": "holistic",
-    "magi": "holistic",
-    "mt_bench": "holistic",
-    "helm_lite_mwr": "holistic",
-    "helm_mwr": "holistic",
-    "biggen_mwr": "holistic",
-    "wildbench_mix": "holistic",
-    "wildbench_gpt4t": "holistic",
-    "wildbench_haiku": "holistic",
-    "wildbench_llama2": "holistic",
-    "wb_score": "holistic",
-    "olmes_average": "holistic",
-    "livebench_average": "holistic",
-    #
-    "triviaqa_mixed": "knowledge",
-    "mmlu_mixed": "knowledge",
-    "triviaqa_hard_mixed": "knowledge",
-    "triviaqa_hard": "knowledge",
-    "mmlu_hard_mixed": "knowledge",
-    "boolq_mixed": "knowledge",
-    "boolq": "knowledge",
-    "triviaqa": "knowledge",
-    "naturalquestions": "knowledge",
-    "mmlu": "knowledge",
-    "mmlu_hard": "knowledge",
-    "record": "knowledge",
-    "openbookqa": "knowledge",
-    "truthfulqa": "knowledge",
-    "narrativeqa": "knowledge",
-    "naturalquestions_open": "knowledge",
-    "naturalquestions_closed": "knowledge",
-    "legalbench": "knowledge",
-    "medqa": "knowledge",
-    "csqa": "knowledge",
-    "mmlu_pro": "knowledge",
-    "data_analysis_average": "knowledge",
-    "high_en": "knowledge",
-    "middle_en": "knowledge",
-    "primary_en": "knowledge",
-    #
-    "drop_mixed": "reasoning",
-    "hellaswag_mixed": "reasoning",
-    "commonsenseqa_mixed": "reasoning",
-    "drop_hard_mixed": "reasoning",
-    "drop_hard": "reasoning",
-    "commonsenseqa": "reasoning",
-    "hellaswag": "reasoning",
-    "piqa": "reasoning",
-    "drop": "reasoning",
-    "copa": "reasoning",
-    "wic": "reasoning",
-    "wsc": "reasoning",
-    "winogrande": "reasoning",
-    "theory_of_mind": "reasoning",
-    "arc_c": "reasoning",
-    "arc_e": "reasoning",
-    "intention_recognition_en": "reasoning",
-    "reasoning_average": "reasoning",
-    "reasoning": "reasoning",
-    #
-    "math": "math",
-    "gsm8k": "math",
-    "mathematics_average": "math",
-    #
-    "humaneval": "code",
-    "mbpp": "code",
-    "humaneval_plus_en": "code",
-    "sanitized_mbpp_en": "code",
-    "humaneval_x": "code",
-    "coding_average": "code",
-    #
-    "tydiqa": "mt",
-    "flores": "mt",
-    "translation": "mt",
-    "wmt_2014": "mt",
-    #
-    "agentbench_overall": "agent",
-    "agentbench_os": "agent",
-    "agentbench_db": "agent",
-    "agentbench_kg": "agent",
-    "agentbench_dcg": "agent",
-    "agentbench_ltp": "agent",
-    "agentbench_hh": "agent",
-    "agentbench_ws": "agent",
-    "agentbench_wb": "agent",
-    #
-    "ax_b": "other",
-    "ax_g": "other",
-    "rte": "other",
-    "siqa": "other",
-    "racemiddle": "other",
-    "racehigh": "other",
-    "xsum": "other",
-    "lambada": "other",
-    "teval_en": "other",
-    "sentiment_analysis_en": "other",
-    "content_summarization_en": "other",
-    "quac": "other",
-    "ms_marco_regular": "other",
-    "ms_marco_trec": "other",
-    "cnn/dailymail": "other",
-    "imdb": "other",
-    "civilcomments": "other",
-    "raft": "other",
-    "grounding": "other",
-    "instruction_following": "other",
-    "planning": "other",
-    "refinement": "other",
-    "safety": "other",
-    "tool_usage": "other",
-    "language_average": "other",
-    "if_average": "other",
-}
+import numpy as np
+
+
+def get_nice_benchmark_name(bench_name):
+    prettified_names = {
+        "holmes": "Holmes",
+        "helm_lite_narrativeqa": "Helm Lite NarrativeQA",
+        "helm_lite_naturalquestionsopen": "Helm Lite NaturalQuestionsOpen",
+        "helm_lite_naturalquestionsclosed": "Helm Lite NaturalQuestionsClosed",
+        "helm_lite_openbookqa": "Helm Lite OpenBookQA",
+        "helm_lite_mmlu": "Helm Lite MMLU",
+        "helm_lite_math_equivalentcot": "Helm Lite MathEquivalentCOT",
+        "helm_lite_gsm8k": "Helm Lite GSM8K",
+        "helm_lite_legalbench": "Helm Lite LegalBench",
+        "helm_lite_medqa": "Helm Lite MedQA",
+        "helm_lite_wmt2014": "Helm Lite WMT2014",
+        "hfv2_bbh": "HFv2 BBH",
+        "hfv2_bbh_raw": "HFv2 BBH Raw",
+        "hfv2_gpqa": "HFv2 GPQA",
+        "hfv2_ifeval": "HFv2 IFEval",
+        "hfv2_math_lvl_5": "HFv2 Math Level 5",
+        "hfv2_mmlu_pro": "HFv2 MMLU Pro",
+        "hfv2_musr": "HFv2 MuSR",
+        "oc_mmlu": "OpenCompass MMLU",
+        "oc_mmlu_pro": "OpenCompass MMLU Pro",
+        "oc_cmmlu": "OpenCompass CMMLU",
+        "oc_bbh": "OpenCompass BBH",
+        "oc_gqpa_dimand": "OpenCompass GQPA-Dimand",
+        "oc_humaneval": "OpenCompass HumanEval",
+        "oc_ifeval": "OpenCompass IFEval",
+        "helm_mmlu": "Helm MMLU",
+        "helm_boolq": "Helm BoolQ",
+        "helm_narrativeqa": "Helm NarrativeQA",
+        "helm_naturalquestionsclosed": "Helm NaturalQuestionsClosed",
+        "helm_naturalquestionsopen": "Helm NaturalQuestionsOpen",
+        "helm_quac": "Helm QuAC",
+        "helm_openbookqa": "Helm OpenBookQA",
+        "helm_imdb": "Helm IMDB",
+        "helm_civilcomments": "Helm CivilComments",
+        "helm_raft": "Helm RAFT",
+        "helm_ms_marcoregular": "Helm MSMARCO Regular",
+        "helm_ms_marcotrec": "Helm MSMARCO Trec",
+        "xsum": "Helm XSUM",
+        "mmlu_pro": "MMLU Pro",
+        "mixeval_triviaqa": "MixEval TriviaQA",
+        "mixeval_mmlu": "MixEval MMLU",
+        "mixeval_drop": "MixEval DROP",
+        "mixeval_hellaswag": "MixEval HellaSwag",
+        "mixeval_commonsenseqa": "MixEval CommonsenseQA",
+        "mixeval_triviaqa_hard": "MixEval TriviaQA Hard",
+        "mixeval_mmlu_hard": "MixEval MMLU Hard",
+        "mixeval_drop_hard": "MixEval DROP Hard",
+        "oc_language": "OpenCompass Language",
+        "oc_knowledge": "OpenCompass Knowledge",
+        "oc_reasoning": "OpenCompass Reasoning",
+        "oc_math": "OpenCompass Math",
+        "oc_code": "OpenCompass Code",
+        "oc_instruct": "OpenCompass Instruction",
+        "oc_agent": "OpenCompass Agent",
+        "oc_arena": "OpenCompass Arena",
+        "lb_reasoning": "LiveBench Reasoning",
+        "lb_coding": "LiveBench Coding",
+        "lb_mathematics": "LiveBench Mathematics",
+        "lb_data_analysis": "LiveBench Data Analysis",
+        "lb_language": "LiveBench Language",
+        "lb_if": "LiveBench Instruction Following",
+        "wb_info_seek": "WildBench Information Seeking",
+        "wb_creative": "WildBench Creative",
+        "wb_code_debug": "WildBench Code Debugging",
+        "wb_math_data": "WildBench Math & Data",
+        "wb_reason_plan": "WildBench Reasoning & Planning",
+        "wb_score": "WildBench Score",
+        "hfv1_arc": "HFv1 ARC",
+        "hfv1_gsm8k": "HFv1 GSM8K",
+        "hfv1_hellaswag": "HFv1 HellaSwag",
+        "hfv1_mmlu": "HFv1 MMLU",
+        "hfv1_truthfulqa": "HFv1 TruthfulQA",
+        "hfv1_winogrande": "HFv1 Winogrande",
+        "biggen_grounding": "BIGGEN Grounding",
+        "biggen_instruction_following": "BIGGEN Instruction Following",
+        "biggen_planning": "BIGGEN Planning",
+        "biggen_reasoning": "BIGGEN Reasoning",
+        "biggen_refinement": "BIGGEN Refinement",
+        "biggen_safety": "BIGGEN Safety",
+        "biggen_theory_of_mind": "BIGGEN Theory of Mind",
+        "biggen_tool_usage": "BIGGEN Tool Usage",
+        "biggen_multilingual": "BIGGEN Multilingual",
+        "lb_reasoning_average": "LiveBench Reasoning Average",
+        "lb_coding_average": "LiveBench Coding Average",
+        "lb_mathematics_average": "LiveBench Mathematics Average",
+        "lb_data_analysis_average": "LiveBench Data Analysis Average",
+        "lb_language_average": "LiveBench Language Average",
+        "lb_if_average": "LiveBench Instruction Following Average",
+        "helm_lite": "Helm Lite",
+        "hf_open_llm_v2": "HF OpenLLM v2",
+        "opencompass_academic": "OpenCompass Academic",
+        "arena_elo": "LMSys Arena",
+        "helm_classic": "Helm Classic",
+        "mixeval": "MixEval",
+        "mixeval_hard": "MixEval Hard",
+        "opencompass": "OpenCompass",
+        "alphacaeval_v2lc": "AlphacaEval v2lc",
+        "livebench_240725": "LiveBench 240725",
+        "wb_elo_lc": "WildBench Elo LC",
+        "arena_hard": "Arena Hard",
+        "agentbench": "AgentBench",
+        "hf_open_llm_v1": "HF OpenLLM v1",
+        "biggen": "BIGGEN",
+        "livebench_240624": "LiveBench 240624",
+        "mt_bench": "MT-Bench",
+        "bfcl": "BFCL",
+    }
+
+    if bench_name in prettified_names:
+        return prettified_names[bench_name]
+    else:
+        return bench_name
 
 
 class Benchmark:
-    def __init__(self, df=pd.DataFrame(), data_source=None):
-        if len(df) == 0:
-            self.is_empty = True
-            self.df = None
-        else:
-            self.assign_df(df, data_source)
+    def __init__(self, df=pd.DataFrame(), data_source=None, normalized_names=False):
+        self.is_empty = True
+        self.df = None
+        if len(df) > 0:
+            assert (
+                data_source or "source" in df.columns
+            ), "A datasource must be inputted with a df"
+            self.validate_df_pre_formatting(df)
+            self.assign_df(df, data_source, normalized_names=normalized_names)
 
     def load_local_catalog(self, catalog_rel_path="assets/benchmarks"):
         catalog_path = os.path.join(Path(__file__).parent, catalog_rel_path)
 
-        for file_path in os.listdir(catalog_path):
-            self.extend(Benchmark(pd.read_csv(os.path.join(catalog_path, file_path))))
+        for file_name in os.listdir(catalog_path):
+            self.extend(
+                Benchmark(
+                    pd.read_csv(os.path.join(catalog_path, file_name)),
+                    data_source=file_name,
+                )
+            )
 
-    def assign_df(self, df, data_source):
-        df["model"] = df["model"].apply(self.standardize_model_name)
-        df["scenario"] = df["scenario"].apply(self.standardize_scenario_name)
+    def assign_df(self, df, data_source, normalized_names):
+        assert (
+            df.columns[0] == "model"
+        ), f'the zeroth df column mush be "model", instead, got {df.columns[0]}'
+
+        if "scenario" not in df.columns:
+            # Assuming the first column is 'model' and the rest are scenarios
+            df = pd.melt(df, id_vars=["model"], var_name="scenario", value_name="score")
+
+        df.replace("-", np.nan, inplace=True)
+        df.dropna()
+        df["score"] = df["score"].astype(float, errors="ignore")
+
+        if not normalized_names:
+            df["model"] = df["model"].apply(self.standardize_model_name)
+            df["scenario"] = df["scenario"].apply(self.standardize_scenario_name)
         df["aggragated_from"] = [[] for _ in range(len(df))]
         if data_source:
             df["source"] = data_source
         self.df = df
-        # self.add_tags()
-        self.validate_dataframe()
+        self.validate_dataframe_post_formatting()
         self.df.dropna(inplace=True)
         self.is_empty = False
 
@@ -194,10 +200,11 @@ class Benchmark:
             normalize
         )
 
-    def add_aggragete(
+    def add_aggregate(
         self,
         new_col_name,
         scenario_blacklist=[],
+        scenario_whitelist=[],
         mean_or_mwr="mwr",
         agg_source_name=None,
         min_scenario_for_models_to_appear_in_agg=0,
@@ -213,7 +220,15 @@ class Benchmark:
 
             return series.transform(win_rate)
 
-        df_for_agg = self.df.query("scenario not in @scenario_blacklist")
+        assert not (
+            scenario_blacklist and scenario_whitelist
+        ), "either scenario_blacklist or scenario_whitelist can be inputted, but not both"
+        if scenario_blacklist:
+            df_for_agg = self.df.query("scenario not in @scenario_blacklist")
+        elif scenario_whitelist:
+            df_for_agg = self.df.query("scenario in @scenario_whitelist")
+        else:
+            pass  # all scenarios are just used here
 
         n_scenario_for_aggregate = len(df_for_agg["scenario"].unique())
         min_scenario_for_models_to_appear_in_agg = min(
@@ -261,7 +276,42 @@ class Benchmark:
 
         self.df = pd.concat([self.df, mean_df.drop(columns=["wr"])])
 
-    def validate_dataframe(self):
+    def validate_df_pre_formatting(self, df):
+        """
+        Validate the input DataFrame before formatting.
+        """
+        if "Unnamed: 0" in df.columns:
+            raise ValueError("DataFrame should not contain 'Unnamed: 0' column")
+
+        # Basic column checks
+        if "model" not in df.columns:
+            raise ValueError("DataFrame must contain a 'model' column")
+        if "scenario" not in df.columns and len(df.columns) < 2:
+            raise ValueError(
+                "DataFrame must contain at least 'model' and one scenario column or 'scenario' and 'score' column"
+            )
+
+        # # Check for duplicate model-scenario pairs (before melting)
+        # if "scenario" not in df.columns:
+        #     melted_df = pd.melt(
+        #         df, id_vars=["model"], var_name="scenario", value_name="score"
+        #     )
+        #     if (
+        #         not len(
+        #             melted_df[
+        #                 melted_df.duplicated(subset=["model", "scenario"], keep=False)
+        #             ]
+        #         )
+        #         == 0
+        #     ):
+        #         raise ValueError("DataFrame contains duplicate model-scenario pairs")
+
+        # Check if scores are numeric (if the score column exists)
+        if "score" in df.columns:
+            if not pd.api.types.is_numeric_dtype(df["score"]):
+                raise ValueError("score must be numeric")
+
+    def validate_dataframe_post_formatting(self):
         if "Unnamed: 0" in self.df.columns:
             self.df.drop(columns=["Unnamed: 0"], inplace=True)
 
@@ -292,7 +342,14 @@ class Benchmark:
             )
             == 0
         ):
-            raise ValueError("a model appears more than once for a single scenario")
+            # raise ValueError("a model appears more than once for a single scenario")
+            # Group by the columns you want to check for duplicates and keep the row with the highest score
+            self.df = self.df.groupby(["model", "scenario", "source"], as_index=False)[
+                "score"
+            ].max()
+            print(
+                "Warning: Duplicate entries found. Keeping rows with the best scores."
+            )
 
         if not pd.api.types.is_numeric_dtype(self.df["score"]):
             raise ValueError("score must be numeric")
@@ -320,7 +377,7 @@ class Benchmark:
             .replace("-", "_")
         )
 
-        return name
+        return get_nice_benchmark_name(name)
 
     @staticmethod
     def standardize_model_name(name):
@@ -337,6 +394,15 @@ class Benchmark:
             .replace("dbrx-inst", "dbrx-instruct")
             .replace("-hf", "")
             .replace("-", "_")
+            .replace("llama_3", "llama3")
+            .replace("ul2", "flan-ul2")
+            .split("/")[-1]
+            .replace("meta_", "")
+            .replace(".", "_")
+            .replace("v01", "v0_1")
+            .replace("v02", "v0_2")
+            .replace("v03", "v0_3")
+            .replace("wml/", "")
         )
         return name
 
@@ -456,10 +522,8 @@ class Benchmark:
             columns=["scenario__source", "scenario__source_counts"], inplace=True
         )
 
-    def add_tags(self):
-        self.df["tag"] = self.df["scenario"].apply(lambda x: benchmark2tag[x])
-
 
 if __name__ == "__main__":
     b = Benchmark()
     b.load_local_catalog()
+    print()

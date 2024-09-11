@@ -1,0 +1,34 @@
+model,OC_arena
+GPT-40-20240513,1090
+Qwen2-72B-Instruct,1085
+Qwen-Max-0428,1071
+Hunyuan-pro,1069
+Claude 3.5 Sonnet 20240620,1055
+ERNIE-4.0-8K-Preview-0518,1051
+DeepSeek-V2-Chat,1048
+Yi-Large,1051
+GPT-4-turbo-20240409,1044
+GLM-4-0520,1033
+DeepSeek-V2,1027
+abab6.5-chat,1027
+Yi-1.5-34B-Chat,1016
+Doubao-pro-32k/240615,1011
+Baichuan4,1007
+Qwen1.5-32B-Chat,1007
+Baichuan4,1007
+Qwen1.5-32B-Chat,1007
+Qwen1.5-72B-Chat,1007
+MoonShot-v1-32K,994
+InternLM2-Chat-20B,992
+Yi-34B-Chat,983
+Command-R+,977
+Qwen1.5-7B-Chat,970
+InternLM2-Chat-7B,968
+Qwen1.5-14B-Chat,968
+InternLM2.5-7B-Chat,958
+DeepSeek LLM 67B Chat,937
+Mixtral-8x22B-Instruct-v0.1,933
+Llama3-70B-Instruct,926
+Llama3-8B-Instruct,920
+DeepSeek MoE 16B Chat,895
+DBRX-Instruct,879

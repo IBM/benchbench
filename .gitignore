@@ -109,3 +109,4 @@ ENV/
 .idea/
 figures/
 
+.DS_Store
