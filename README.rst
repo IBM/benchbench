@@ -1,24 +1,35 @@
 
-Benchmark Agreement Testing: ``BAT`` Package
+BenchBench Package
 =========================================
 
 Overview
 --------
-The ``BAT`` package is designed to facilitate benchmark agreement testing for NLP models. It allows users to easily compare multiple models against various benchmarks and generate comprehensive reports on their agreement.
+The ``benchbench`` package is designed to facilitate benchmark agreement testing for NLP models. It allows users to easily compare multiple models against various benchmarks and generate comprehensive reports on their agreement.
 
 It also supports `BenchBench <https://huggingface.co/spaces/ibm/benchbench>`_ the benchmark to compare benchmarks.
 
 Installation
 ------------
-To install the ``BAT`` package, you can use pip:
+To install the ``benchbech`` package, you can use out github:
 
 .. code-block:: bash
 
-    pip install bat-package
+    git+https://github.com/ibm/benchbench
+
+
+Contribute a new Benchmark
+--------------------------
+
+Contributing a new benchmark is as simple as creating PR with a new CSV file in `src/bat/assets/benchmarks`
+Note the name of the file represents the source and snapshot date of the data.
+See files there for examples on how to structure the CSV.
+
 
 Usage Example
 -------------
-Below is a step-by-step example of how to use the ``BAT`` package to perform agreement testing.
+Below is a step-by-step example of how to use the ``benchbench`` package to perform agreement testing.
+
+
 
 **Step 1: Configuration**
 
