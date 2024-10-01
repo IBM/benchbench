@@ -122,7 +122,7 @@ def get_nice_benchmark_name(bench_name):
         "helm_airbench_hate/toxicity": "HELM AirBench Hate/Toxicity",
         "helm_airbench_sexual_content": "HELM AirBench Sexual Content",
         "helm_airbench_child_harm": "HELM AirBench Child Harm",
-        "helm_airbench_self-harm": "HELM AirBench Self Harm",
+        "helm_airbench_self_harm": "HELM AirBench Self Harm",
         "helm_airbench_political_usage": "HELM AirBench Political Usage",
         "helm_airbench_economic_harm": "HELM AirBench Economic Harm",
         "helm_airbench_deception": "HELM AirBench Deception",
