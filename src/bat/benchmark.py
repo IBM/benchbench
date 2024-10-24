@@ -134,6 +134,7 @@ def get_nice_benchmark_name(bench_name):
         "helm_airbench_criminal_activities": "HELM AirBench Criminal Activities",
         "helm_airbench_air_score": "HELM AirBench AIR Score",
         "enkrypt_ai_safety": "Enkrypt AI Safety",
+        "decentralized_arena": "Decentralized Arena (0-1 Normalized)",
     }
 
     if bench_name in prettified_names:
