@@ -1,7 +1,7 @@
 import itertools
 import random
 import pandas as pd
-
+from tqdm import tqdm
 from bat.logic import get_pair_agreement
 
 
@@ -47,7 +47,7 @@ class Tester:
         for corr_type in self.cfg.corr_types:
             for model_select_strategy in self.cfg.model_select_strategy_list:
                 for model_subset_size_requested in self.cfg.n_models_taken_list:
-                    for scenario1, scenario2 in scenario_pairs:
+                    for scenario1, scenario2 in tqdm(scenario_pairs):
                         cur_scen_res = all_bench_res.query(
                             f'scenario == "{scenario1}" or scenario == "{scenario2}"'
                         )
