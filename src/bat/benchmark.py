@@ -10,7 +10,7 @@ import json
 
 
 def get_nice_benchmark_name(bench_name):
-    with open("src/bat/assets/prettified_bencmark_names.json", "r") as f:
+    with open("assets/prettified_bencmark_names.json", "r") as f:
         prettified_names = json.load(f)
 
     if bench_name in prettified_names:
@@ -20,7 +20,7 @@ def get_nice_benchmark_name(bench_name):
 
 
 def lower_os_better_for_source(source_name):
-    with open("src/bat/assets/lower_is_better_benchmarks.txt", "r") as f:
+    with open("assets/lower_is_better_benchmarks.txt", "r") as f:
         lower_is_better_sources = [
             source.replace("\n", "") + ".csv" for source in f.readlines()
         ]
