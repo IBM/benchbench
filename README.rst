@@ -17,11 +17,11 @@ Usage
 -----
 
 While much of `benchbench`'s functionality is available via the interactive [BenchBench app](https://huggingface.co/spaces/ibm/benchbench),  for more advanced usage and customization, clone the repository:
-```bash
+```
 git clone git@github.com:IBM/benchbench.git
 ```
 install in the environment of choice:
-```bash
+```
 cd benchbench
 pip install -e .
 ```
