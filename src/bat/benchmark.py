@@ -6,141 +6,26 @@ import pandas as pd
 import seaborn as sns
 
 import numpy as np
+import json
 
 
 def get_nice_benchmark_name(bench_name):
-    prettified_names = {
-        "holmes": "Holmes",
-        "helm_lite_narrativeqa": "Helm Lite NarrativeQA",
-        "helm_lite_naturalquestionsopen": "Helm Lite NaturalQuestionsOpen",
-        "helm_lite_naturalquestionsclosed": "Helm Lite NaturalQuestionsClosed",
-        "helm_lite_openbookqa": "Helm Lite OpenBookQA",
-        "helm_lite_mmlu": "Helm Lite MMLU",
-        "helm_lite_math_equivalentcot": "Helm Lite MathEquivalentCOT",
-        "helm_lite_gsm8k": "Helm Lite GSM8K",
-        "helm_lite_legalbench": "Helm Lite LegalBench",
-        "helm_lite_medqa": "Helm Lite MedQA",
-        "helm_lite_wmt2014": "Helm Lite WMT2014",
-        "hfv2_bbh": "HFv2 BBH",
-        "hfv2_bbh_raw": "HFv2 BBH Raw",
-        "hfv2_gpqa": "HFv2 GPQA",
-        "hfv2_ifeval": "HFv2 IFEval",
-        "hfv2_math_lvl_5": "HFv2 Math Level 5",
-        "hfv2_mmlu_pro": "HFv2 MMLU Pro",
-        "hfv2_musr": "HFv2 MuSR",
-        "oc_mmlu": "OpenCompass MMLU",
-        "oc_mmlu_pro": "OpenCompass MMLU Pro",
-        "oc_cmmlu": "OpenCompass CMMLU",
-        "oc_bbh": "OpenCompass BBH",
-        "oc_gqpa_dimand": "OpenCompass GQPA-Dimand",
-        "oc_humaneval": "OpenCompass HumanEval",
-        "oc_ifeval": "OpenCompass IFEval",
-        "helm_mmlu": "Helm MMLU",
-        "helm_boolq": "Helm BoolQ",
-        "helm_narrativeqa": "Helm NarrativeQA",
-        "helm_naturalquestionsclosed": "Helm NaturalQuestionsClosed",
-        "helm_naturalquestionsopen": "Helm NaturalQuestionsOpen",
-        "helm_quac": "Helm QuAC",
-        "helm_openbookqa": "Helm OpenBookQA",
-        "helm_imdb": "Helm IMDB",
-        "helm_civilcomments": "Helm CivilComments",
-        "helm_raft": "Helm RAFT",
-        "helm_ms_marcoregular": "Helm MSMARCO Regular",
-        "helm_ms_marcotrec": "Helm MSMARCO Trec",
-        "xsum": "Helm XSUM",
-        "mmlu_pro": "MMLU Pro",
-        "mixeval_triviaqa": "MixEval TriviaQA",
-        "mixeval_mmlu": "MixEval MMLU",
-        "mixeval_drop": "MixEval DROP",
-        "mixeval_hellaswag": "MixEval HellaSwag",
-        "mixeval_commonsenseqa": "MixEval CommonsenseQA",
-        "mixeval_triviaqa_hard": "MixEval TriviaQA Hard",
-        "mixeval_mmlu_hard": "MixEval MMLU Hard",
-        "mixeval_drop_hard": "MixEval DROP Hard",
-        "oc_language": "OpenCompass Language",
-        "oc_knowledge": "OpenCompass Knowledge",
-        "oc_reasoning": "OpenCompass Reasoning",
-        "oc_math": "OpenCompass Math",
-        "oc_code": "OpenCompass Code",
-        "oc_instruct": "OpenCompass Instruction",
-        "oc_agent": "OpenCompass Agent",
-        "oc_arena": "OpenCompass Arena",
-        "lb_reasoning": "LiveBench Reasoning",
-        "lb_coding": "LiveBench Coding",
-        "lb_mathematics": "LiveBench Mathematics",
-        "lb_data_analysis": "LiveBench Data Analysis",
-        "lb_language": "LiveBench Language",
-        "lb_if": "LiveBench Instruction Following",
-        "wb_info_seek": "WildBench Information Seeking",
-        "wb_creative": "WildBench Creative",
-        "wb_code_debug": "WildBench Code Debugging",
-        "wb_math_data": "WildBench Math & Data",
-        "wb_reason_plan": "WildBench Reasoning & Planning",
-        "wb_score": "WildBench Score",
-        "hfv1_arc": "HFv1 ARC",
-        "hfv1_gsm8k": "HFv1 GSM8K",
-        "hfv1_hellaswag": "HFv1 HellaSwag",
-        "hfv1_mmlu": "HFv1 MMLU",
-        "hfv1_truthfulqa": "HFv1 TruthfulQA",
-        "hfv1_winogrande": "HFv1 Winogrande",
-        "biggen_grounding": "BIGGEN Grounding",
-        "biggen_instruction_following": "BIGGEN Instruction Following",
-        "biggen_planning": "BIGGEN Planning",
-        "biggen_reasoning": "BIGGEN Reasoning",
-        "biggen_refinement": "BIGGEN Refinement",
-        "biggen_safety": "BIGGEN Safety",
-        "biggen_theory_of_mind": "BIGGEN Theory of Mind",
-        "biggen_tool_usage": "BIGGEN Tool Usage",
-        "biggen_multilingual": "BIGGEN Multilingual",
-        "lb_reasoning_average": "LiveBench Reasoning Average",
-        "lb_coding_average": "LiveBench Coding Average",
-        "lb_mathematics_average": "LiveBench Mathematics Average",
-        "lb_data_analysis_average": "LiveBench Data Analysis Average",
-        "lb_language_average": "LiveBench Language Average",
-        "lb_if_average": "LiveBench Instruction Following Average",
-        "helm_lite": "Helm Lite",
-        "hf_open_llm_v2": "HF OpenLLM v2",
-        "opencompass_academic": "OpenCompass Academic",
-        "arena_elo": "LMSys Arena",
-        "helm_classic": "Helm Classic",
-        "mixeval": "MixEval",
-        "mixeval_hard": "MixEval Hard",
-        "opencompass": "OpenCompass",
-        "alphacaeval_v2lc": "AlphacaEval v2lc",
-        "livebench_240725": "LiveBench 240725",
-        "wb_elo_lc": "WildBench Elo LC",
-        "arena_hard": "Arena Hard",
-        "agentbench": "AgentBench",
-        "hf_open_llm_v1": "HF OpenLLM v1",
-        "biggen": "BIGGEN",
-        "livebench_240624": "LiveBench 240624",
-        "mt_bench": "MT-Bench",
-        "bfcl": "BFCL",
-        "helm_airbench_security_risks": "HELM AirBench Security Risks",
-        "helm_airbench_operational_misuses": "HELM AirBench Operational Misuses",
-        "helm_airbench_violence_&_extremism": "HELM AirBench Violence & Extremism",
-        "helm_airbench_hate/toxicity": "HELM AirBench Hate/Toxicity",
-        "helm_airbench_sexual_content": "HELM AirBench Sexual Content",
-        "helm_airbench_child_harm": "HELM AirBench Child Harm",
-        "helm_airbench_self_harm": "HELM AirBench Self Harm",
-        "helm_airbench_political_usage": "HELM AirBench Political Usage",
-        "helm_airbench_economic_harm": "HELM AirBench Economic Harm",
-        "helm_airbench_deception": "HELM AirBench Deception",
-        "helm_airbench_manipulation": "HELM AirBench Manipulation",
-        "helm_airbench_defamation": "HELM AirBench Defamation",
-        "helm_airbench_fundamental_rights": "HELM AirBench Fundamental Rights",
-        "helm_airbench_discrimination/bias": "HELM AirBench Discrimination/Bias",
-        "helm_airbench_privacy": "HELM AirBench Privacy",
-        "helm_airbench_criminal_activities": "HELM AirBench Criminal Activities",
-        "helm_airbench_air_score": "HELM AirBench AIR Score",
-        "enkrypt_ai_safety": "Enkrypt AI Safety",
-        "decentralized_arena": "Decentralized Arena (0-1 Normalized)",
-    }
+    with open("src/bat/assets/prettified_bencmark_names.json", "r") as f:
+        prettified_names = json.load(f)
 
     if bench_name in prettified_names:
         return prettified_names[bench_name]
     else:
         return bench_name
+
+
+def lower_os_better_for_source(source_name):
+    with open("src/bat/assets/lower_is_better_benchmarks.txt", "r") as f:
+        lower_is_better_sources = [
+            source.replace("\n", "") + ".csv" for source in f.readlines()
+        ]
+
+    return source_name in lower_is_better_sources
 
 
 class Benchmark:
@@ -165,7 +50,7 @@ class Benchmark:
                 )
             )
 
-    def assign_df(self, df, data_source, normalized_names):
+    def assign_df(self, df, data_source, normalized_names, lower_is_better=False):
         assert (
             df.columns[0] == "model"
         ), f'the zeroth df column mush be "model", instead, got {df.columns[0]}'
@@ -187,9 +72,13 @@ class Benchmark:
         self.df = df
         self.validate_dataframe_post_formatting()
         self.df.dropna(inplace=True)
+
+        if lower_os_better_for_source(self.df["source"].iloc[0]):
+            self.normalize_scores_per_scenario(lower_is_better=True)
+
         self.is_empty = False
 
-    def normalize_scores_per_scenario(self):
+    def normalize_scores_per_scenario(self, lower_is_better=False):
         """
         Normalize the 'score' column in the DataFrame to a 0-1 range within each scenario.
 
@@ -215,9 +104,13 @@ class Benchmark:
                 group["score"] = (group["score"] - min_score) / (max_score - min_score)
             return group
 
-        return self.df.groupby("scenario", as_index=False, group_keys=False).apply(
+        self.df = self.df.groupby("scenario", as_index=False, group_keys=False).apply(
             normalize
         )
+        if lower_is_better:
+            self.df["score"] = 1 - self.df["score"]
+
+        return
 
     def add_aggregate(
         self,
