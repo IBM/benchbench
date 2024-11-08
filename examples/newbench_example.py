@@ -4,13 +4,18 @@ from datetime import datetime
 
 
 def load_scenarios(filepath, comment_char="#"):
-    """Loads scenarios from a text file, ignoring commented lines.
-    Allows specifying the comment character.
-    """
-    with open(filepath, "r") as f:
-        scenarios = [
-            line.strip() for line in f if not line.strip().startswith(comment_char)
-        ]
+    """Loads scenarios from a text file, ignoring commented lines."""
+    scenarios = []
+    try:
+        with open(filepath, "r") as f:
+            for line in f:
+                line = line.strip()
+                if line and not line.startswith(comment_char):
+                    scenarios.append(line)
+    except FileNotFoundError:
+        print(
+            f"Warning: Scenarios file not found: {filepath}. Proceeding without these scenarios."
+        )
     return scenarios
 
 
