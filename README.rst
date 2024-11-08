@@ -5,7 +5,7 @@ Overview
 --------
 The ``benchbench`` package simplifies benchmark agreement testing for NLP models. Compare multiple models across various benchmarks and generate comprehensive agreement reports easily.
 
-It also powers `BenchBench` (https://huggingface.co/spaces/ibm/benchbench), a benchmark for comparing benchmarks.  *(Note: Removed the extra asterisks)*
+It also powers `BenchBench` (https://huggingface.co/spaces/ibm/benchbench), a benchmark for comparing benchmarks.  
 
 Contributing a New Benchmark
 --------------------------
@@ -29,7 +29,7 @@ Install in the environment of your choice:
    cd benchbench
    pip install -e .
 
-And check out the example in ``examples/newbench_example`` (or here: https://github.com/IBM/benchbench/blob/main/examples/newbench_example.py) *(Note: Use backticks for file path)*
+And check out the example in ``examples/newbench_example.py`` (or here: https://github.com/IBM/benchbench/blob/main/examples/newbench_example.py) *(Note: Use backticks for file path)*
 
 Contributing
 ------------
