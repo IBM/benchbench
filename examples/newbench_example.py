@@ -19,6 +19,7 @@ def load_scenarios(filepath, comment_char="#"):
     return scenarios
 
 
+# loading the benchmarks to work with, change the files to fit what you are interested in
 scenarios_for_aggregate = load_scenarios("examples/scenarios_for_aggregate.txt")
 scenarios_of_intereset = load_scenarios("examples/scenarios_of_intereset.txt")
 
