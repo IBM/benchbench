@@ -263,7 +263,7 @@ class Benchmark:
             .index.to_list()
         )
 
-        df_for_agg = df_for_agg.query("model in @models_to_consider")
+        df_for_agg = df_for_agg.query("model in @models_to_consider").copy()
 
         df_for_agg["wr"] = df_for_agg.groupby(["scenario"])["score"].transform(
             calculate_win_rate
