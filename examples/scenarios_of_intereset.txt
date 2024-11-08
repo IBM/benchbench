@@ -1,0 +1,106 @@
+# Scenarios of Interest
+Holmes
+# "eureka_information_retrieval_fact_recall",
+# "eureka_information_retrieval_fact_precision",
+# "eureka_instruction_following",
+# "eureka_long_context_qa_average",
+# "eureka_long_context_qa_longest_context_3k",
+# "eureka_toxicity_detection",
+Helm Lite
+# "Helm Lite NarrativeQA",
+# "Helm Lite NaturalQuestionsOpen",
+# "Helm Lite NaturalQuestionsClosed",
+# "Helm Lite OpenBookQA",
+# "Helm Lite MMLU",
+# "Helm Lite MathEquivalentCOT",
+# "Helm Lite GSM8K",
+# "Helm Lite LegalBench",
+# "Helm Lite MedQA",
+# "Helm Lite WMT2014",
+LMSys Arena
+HF OpenLLM v2
+HFv2 BBH
+HFv2 BBH Raw
+HFv2 GPQA
+HFv2 IFEval
+HFv2 MMLU Pro
+HFv2 Math Level 5
+HFv2 MuSR
+tablebench_overall_dp
+# "trustworthy_average",
+# "trustworthy_non_toxicity",
+# "trustworthy_non_stereotype",
+# "trustworthy_advglue_pp",
+# "trustworthy_ood",
+# "trustworthy_adv_demo",
+# "trustworthy_privacy",
+# "trustworthy_ethics",
+# "trustworthy_fairness",
+OpenCompass Academic
+# "OpenCompass MMLU",
+# "OpenCompass MMLU Pro",
+# "OpenCompass CMMLU",
+# "OpenCompass BBH",
+# "OpenCompass GQPA-Dimand",
+# "OpenCompass Math",
+OpenCompass HumanEval
+# "OpenCompass IFEval",
+Helm MMLU
+Helm Classic
+# "Helm BoolQ",
+# "Helm NarrativeQA",
+# "Helm NaturalQuestionsClosed",
+# "Helm NaturalQuestionsOpen",
+# "Helm QuAC",
+# "helm_hellaswag",
+# "Helm OpenBookQA",
+# "helm_truthfulqa",
+# "Helm MSMARCO Regular",
+# "Helm MSMARCO Trec",
+# "helm_cnn/dailymail",
+# "Helm XSUM",
+# "Helm IMDB",
+# "Helm CivilComments",
+# "Helm RAFT",
+MMLU Pro
+MixEval
+# "MixEval Hard",
+# "MixEval TriviaQA",
+# "MixEval MMLU",
+# "MixEval DROP",
+# "MixEval HellaSwag",
+# "MixEval CommonsenseQA",
+# "MixEval TriviaQA Hard",
+# "MixEval MMLU Hard",
+# "MixEval DROP Hard",
+toolbench
+AlphacaEval v2lc
+# "HELM AirBench Security Risks",
+# ... (Rest of the AirBench entries)
+HELM AirBench AIR Score
+OpenCompass
+# "OpenCompass Language",
+# ... (Rest of the OpenCompass entries)
+OpenCompass Arena
+# "LiveBench 240725"
+# "LiveBench Reasoning",
+# ... (Rest of LiveBench entries)
+Enkrypt AI Safety
+# "WildBench Elo LC",
+# ... (Rest of WildBench entries)
+WildBench Score
+Decentralized Arena (0-1 Normalized)
+Arena Hard
+AgentBench
+MT-Bench
+HF OpenLLM v1
+# "HFv1 ARC",
+# ... (Rest of HFv1 entries)
+BFCL
+eq_bench
+# "magi_hard",
+BIGGEN
+# "BIGGEN Grounding",
+# ... (Rest of BIGGEN entries)
+ruler
+# "LiveBench 240624",
