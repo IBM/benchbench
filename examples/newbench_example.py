@@ -84,7 +84,6 @@ agreements = tester.all_vs_all_agreement_testing(
     allbench
 )  # No need for single_source_scenario here, as we've already filtered
 
-
 # --- Report the results ---
 reporter = Reporter()
 
