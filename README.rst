@@ -3,9 +3,9 @@ BenchBench Package
 
 Overview
 --------
-The `benchbench` package simplifies benchmark agreement testing for NLP models. Compare multiple models across various benchmarks and generate comprehensive agreement reports easily.
+The ``benchbench`` package simplifies benchmark agreement testing for NLP models. Compare multiple models across various benchmarks and generate comprehensive agreement reports easily.
 
-It also powers `BenchBench` (https://huggingface.co/spaces/ibm/benchbench), a benchmark *for comparing benchmarks*.
+It also powers `BenchBench` (https://huggingface.co/spaces/ibm/benchbench), a benchmark for comparing benchmarks.  *(Note: Removed the extra asterisks)*
 
 Contributing a New Benchmark
 --------------------------
@@ -16,18 +16,20 @@ To contribute a new benchmark, create a pull request with a new CSV file in ``sr
 Usage
 -----
 
-While much of `benchbench`'s functionality is available via the interactive `BenchBench` app (https://huggingface.co/spaces/ibm/benchbench), for more advanced usage and customization, clone the repository:
+While much of ``benchbench``'s functionality is available via the interactive `BenchBench` app (https://huggingface.co/spaces/ibm/benchbench), for more advanced usage and customization, clone the repository:
 
 .. code-block:: bash
-    git clone git@github.com:IBM/benchbench.git
+
+   git clone git@github.com:IBM/benchbench.git
 
 Install in the environment of your choice:
 
 .. code-block:: bash
-    cd benchbench
-    pip install -e .
 
-And check out the example in `examples/newbench_example` (or here: https://github.com/IBM/benchbench/blob/main/examples/newbench_example.py)
+   cd benchbench
+   pip install -e .
+
+And check out the example in ``examples/newbench_example`` (or here: https://github.com/IBM/benchbench/blob/main/examples/newbench_example.py) *(Note: Use backticks for file path)*
 
 Contributing
 ------------
