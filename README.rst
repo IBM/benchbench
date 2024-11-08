@@ -1,23 +1,32 @@
-
 BenchBench Package
 =========================================
 
 Overview
 --------
-The ``benchbench`` package is designed to facilitate benchmark agreement testing for NLP models. It allows users to easily compare multiple models against various benchmarks and generate comprehensive reports on their agreement.
+The `benchbench` package simplifies benchmark agreement testing for NLP models.  Compare multiple models across various benchmarks and generate comprehensive agreement reports easily.
 
-It also supports `BenchBench <https://huggingface.co/spaces/ibm/benchbench>`_ the benchmark to compare benchmarks.
+It also powers [BenchBench](https://huggingface.co/spaces/ibm/benchbench), a benchmark *for comparing benchmarks*.
 
-Contribute a new Benchmark
+Contributing a New Benchmark
 --------------------------
 
-Contributing a new benchmark is as simple as creating PR with a new CSV file in `src/bat/assets/benchmarks`
-Note the name of the file represents the source and snapshot date of the data.
-See files there for examples on how to structure the CSV.
+To contribute a new benchmark, create a pull request with a new CSV file in `src/bat/assets/benchmarks`.  The filename should reflect the data source and snapshot date (see existing files for examples).
 
-Usage Example
--------------
-See https://github.com/IBM/benchbench/blob/main/examples/newbench_example.py
+
+Usage
+-----
+
+While much of `benchbench`'s functionality is available via the interactive [BenchBench app](https://huggingface.co/spaces/ibm/benchbench),  for more advanced usage and customization, clone the repository:
+```bash
+git clone git@github.com:IBM/benchbench.git
+```
+install in the environment of choice:
+```bash
+cd benchbench
+pip install -e .
+```
+and check out the example here:
+https://github.com/IBM/benchbench/blob/main/examples/newbench_example.py
 
 Contributing
 ------------
@@ -26,3 +35,4 @@ Contributions to the ``BAT`` package are welcome! Please submit your pull reques
 License
 -------
 This package is released under the MIT License.
+
