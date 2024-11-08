@@ -20,6 +20,7 @@ While much of `benchbench`'s functionality is available via the interactive `Ben
 
 .. code-block:: bash
     git clone git@github.com:IBM/benchbench.git
+
 Install in the environment of your choice:
 
 .. code-block:: bash
