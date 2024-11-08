@@ -5,7 +5,7 @@ Credits
 Development Lead
 ----------------
 
-* Yotam Perlitz <yotam.perlitz@ibm.com>
+* Yotam Perlitz <perlitz@gmail.com>
 
 Contributors
 ------------

@@ -27,6 +27,8 @@ Install in the environment of your choice:
 .. code-block:: bash
 
    cd benchbench
+
+   conda create -n bat python=3.11
    pip install -e .
 
 And check out the example in ``examples/newbench_example.py `` (or here: https://github.com/IBM/benchbench/blob/main/examples/newbench_example.py) *(Note: Use backticks for file path)*

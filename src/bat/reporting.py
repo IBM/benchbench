@@ -139,8 +139,6 @@ class Reporter:
             index="scenario", columns="ref_scenario"
         )
 
-        sns.set_theme(font_scale=1.2)  # Increase font size for better readability
-
         plt.figure(figsize=(10, 8))  # Increase figure size for better visualization
 
         sns.heatmap(
@@ -231,7 +229,7 @@ class Reporter:
                 }
             )
 
-        return pd.DataFrame(z_scores)
+        return pd.DataFrame(z_scores).sort_values('z_score')
 
     @staticmethod
     def get_z_score(

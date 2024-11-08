@@ -14,12 +14,14 @@ maintainers = [
   {name = "Yotam Perlitz", email = "perlitz@gmail.com"}
 ]
 classifiers = []
-license = {text = "Not open source"}
+license = {text = "Open source"}
 dependencies = [
-    "pandas",
-    "seaborn",
-    "fuzzywuzzy",
-    "scipy"
+  "pandas",
+  "seaborn",
+  "matplotlib",
+  "numpy",
+  "scipy",
+  "tqdm",
 ]
 
 [project.urls]
