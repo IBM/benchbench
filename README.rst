@@ -19,13 +19,14 @@ Usage
 While much of `benchbench`'s functionality is available via the interactive `BenchBench` app (https://huggingface.co/spaces/ibm/benchbench), for more advanced usage and customization, clone the repository:
 
 .. code-block:: bash
-git clone git@github.com:IBM/benchbench.git
+    git clone git@github.com:IBM/benchbench.git
 Install in the environment of your choice:
 
 .. code-block:: bash
-cd benchbench
-pip install -e .
-And check out the example here: https://github.com/IBM/benchbench/blob/main/examples/newbench_example.py
+    cd benchbench
+    pip install -e .
+
+And check out the example in `examples/newbench_example` (or here: https://github.com/IBM/benchbench/blob/main/examples/newbench_example.py)
 
 Contributing
 ------------
