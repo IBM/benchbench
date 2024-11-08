@@ -10,7 +10,10 @@ import json
 
 
 def get_nice_benchmark_name(bench_name):
-    with open("assets/prettified_bencmark_names.json", "r") as f:
+    with open(
+        os.path.join(Path(__file__).parent, "assets/prettified_bencmark_names.json"),
+        "r",
+    ) as f:
         prettified_names = json.load(f)
 
     if bench_name in prettified_names:
@@ -20,7 +23,10 @@ def get_nice_benchmark_name(bench_name):
 
 
 def lower_os_better_for_source(source_name):
-    with open("assets/lower_is_better_benchmarks.txt", "r") as f:
+    with open(
+        os.path.join(Path(__file__).parent, "assets/lower_is_better_benchmarks.txt"),
+        "r",
+    ) as f:
         lower_is_better_sources = [
             source.replace("\n", "") + ".csv" for source in f.readlines()
         ]
@@ -73,7 +79,7 @@ class Benchmark:
         self.validate_dataframe_post_formatting()
         self.df.dropna(inplace=True)
 
-        if lower_os_better_for_source(self.df["source"].iloc[0]):
+        if lower_os_better_for_source(data_source):
             self.normalize_scores_per_scenario(lower_is_better=True)
 
         self.is_empty = False
@@ -109,8 +115,6 @@ class Benchmark:
         )
         if lower_is_better:
             self.df["score"] = 1 - self.df["score"]
-
-        return
 
     def add_aggregate(
         self,
