@@ -1,0 +1,14 @@
+model,trustworthy
+google/gemma-2b-it,67.18
+google/gemma-7b-it,66.87
+lmsys/vicuna-7b-v1.3,60.62
+meta-llama/Llama-2-7b-chat-hf,74.72
+meta-llama/Meta-Llama-3-8B-Instruct,80.61
+mosaicml/mpt-7b-chat,62.29
+openai/gpt-3.5-turbo-0301,72.45
+openai/gpt-4-0314,69.24
+openai/gpt-4o-2024-05-13,82.96
+openai/gpt-4o-mini-2024-07-18,76.31
+tiiuae/falcon-7b-instruct,59.49
+togethercomputer/RedPajama-INCITE-7B-Instruct,56.58
+vertexai/gemini-pro-1.0,80.61

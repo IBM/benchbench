@@ -1,0 +1,68 @@
+model,helm_classic
+Llama 2 (70B),0.944
+LLaMA (65B),0.908
+text-davinci-002,0.905
+Mistral v0.1 (7B),0.884
+Cohere Command beta (52.4B),0.874
+text-davinci-003,0.872
+Jurassic-2 Jumbo (178B),0.824
+Llama 2 (13B),0.823
+TNLG v2 (530B),0.787
+gpt-3.5-turbo-0613,0.783
+LLaMA (30B),0.781
+Anthropic-LM v4-s3 (52B),0.78
+gpt-3.5-turbo-0301,0.76
+Jurassic-2 Grande (17B),0.743
+Palmyra X (43B),0.732
+Falcon (40B),0.729
+Falcon-Instruct (40B),0.727
+MPT-Instruct (30B),0.716
+MPT (30B),0.714
+J1-Grande v2 beta (17B),0.706
+Vicuna v1.3 (13B),0.706
+Cohere Command beta (6.1B),0.675
+Cohere xlarge v20221108 (52.4B),0.664
+Luminous Supreme (70B),0.662
+Vicuna v1.3 (7B),0.625
+OPT (175B),0.609
+Llama 2 (7B),0.607
+LLaMA (13B),0.595
+InstructPalmyra (30B),0.568
+Cohere xlarge v20220609 (52.4B),0.56
+Jurassic-2 Large (7.5B),0.553
+davinci (175B),0.538
+LLaMA (7B),0.533
+RedPajama-INCITE-Instruct (7B),0.524
+J1-Jumbo v1 (178B),0.517
+GLM (130B),0.512
+Luminous Extended (30B),0.485
+OPT (66B),0.448
+BLOOM (176B),0.446
+J1-Grande v1 (17B),0.433
+Alpaca (7B),0.381
+Falcon (7B),0.378
+RedPajama-INCITE-Base (7B),0.378
+Cohere large v20220720 (13.1B),0.372
+RedPajama-INCITE-Instruct-v1 (3B),0.366
+text-curie-001,0.36
+GPT-NeoX (20B),0.351
+Luminous Base (13B),0.315
+Cohere medium v20221108 (6.1B),0.312
+RedPajama-INCITE-Base-v1 (3B),0.311
+TNLG v2 (6.7B),0.309
+J1-Large v1 (7.5B),0.285
+GPT-J (6B),0.273
+Pythia (12B),0.257
+curie (6.7B),0.247
+Falcon-Instruct (7B),0.244
+Cohere medium v20220720 (6.1B),0.23
+text-babbage-001,0.229
+T0pp (11B),0.197
+Pythia (6.9B),0.196
+UL2 (20B),0.167
+T5 (11B),0.131
+babbage (1.3B),0.114
+Cohere small v20220720 (410M),0.109
+ada (350M),0.108
+text-ada-001,0.107
+YaLM (100B),0.075

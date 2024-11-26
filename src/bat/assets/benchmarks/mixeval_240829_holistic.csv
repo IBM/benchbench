@@ -1,0 +1,72 @@
+model,MixEval
+LLaMA-3-70B,82.2
+Qwen1.5-72B,79.5
+Yi-34B,78.3
+Qwen1.5-32B,77.6
+Mixtral-8x7B,74.0
+LLaMA-2-70B,73.2
+Qwen1.5-MoE-A2.7B,70.2
+Qwen1.5-7B,68.2
+LLaMA-3-8B,65.1
+Mistral-7B,64.8
+Gemma-7B,64.7
+Yi-6B,63.1
+Qwen1.5-4B,58.2
+JetMoE-8B,57.1
+DeepSeek-7B,52.2
+Phi-2,51.9
+DeepSeekMoE-16B,51.4
+LLaMA-2-7B,43.1
+Gemma-2B,38.9
+OLMo-7B,31.8
+MPT-7B,30.8
+Claude 3.5 Sonnet-0620,89.9
+LLaMA-3.1-405B-Instruct,-
+GPT-4o-2024-05-13,87.9
+Claude 3 Opus,88.1
+GPT-4-Turbo-2024-04-09,88.8
+Gemini 1.5 Pro-API-0409,84.2
+Gemini 1.5 Pro-API-0514,84.8
+Mistral Large 2,86.1
+Yi-Large-preview,84.4
+LLaMA-3-70B-Instruct,84.0
+Qwen-Max-0428,86.1
+Claude 3 Sonnet,81.7
+Reka Core-20240415,83.3
+MAmmoTH2-8x7B-Plus,81.5
+DeepSeek-V2,83.7
+GPT-4o mini,84.2
+Command R+,81.5
+Yi-1.5-34B-Chat,81.7
+Mistral-Large,84.2
+Qwen1.5-72B-Chat,84.1
+Mistral-Medium,81.9
+Gemini 1.0 Pro,78.9
+Reka Flash-20240226,79.8
+Mistral-Small,81.2
+LLaMA-3-8B-Instruct,75.0
+Command R,77.0
+Qwen1.5-32B-Chat,81.0
+GPT-3.5-Turbo-0125,79.7
+Claude 3 Haiku,79.7
+Yi-34B-Chat,80.1
+Mixtral-8x7B-Instruct-v0.1,76.4
+Starling-LM-7B-beta,74.8
+Yi-1.5-9B-Chat,74.2
+Gemma-1.1-7B-IT,69.6
+Vicuna-33B-v1.3,66.3
+LLaMA-2-70B-Chat,74.6
+MAP-Neo-Instruct-v0.1,70.0
+Mistral-7B-Instruct-v0.2,70.0
+Qwen1.5-7B-Chat,71.4
+Reka Edge-20240208,68.5
+Zephyr-7B-β,69.1
+LLaMA-2-7B-Chat,61.7
+Yi-6B-Chat,65.6
+Qwen1.5-MoE-A2.7B-Chat,69.1
+Gemma-1.1-2B-IT,51.9
+Vicuna-7B-v1.5,60.3
+OLMo-7B-Instruct,55.0
+Qwen1.5-4B-Chat,57.2
+JetMoE-8B-Chat,51.6
+MPT-7B-Chat,43.8
